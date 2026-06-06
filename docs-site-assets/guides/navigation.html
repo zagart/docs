@@ -59,30 +59,16 @@
   <p class="subtitle">net.zagart.navigation:core:1.0.0</p>
 
   <div class="info-box">
-    <strong>Published via:</strong> JitPack &middot; No authentication required
+    <strong>Published via:</strong> Maven Central &middot; No authentication required
   </div>
 
   <h2>Installation</h2>
 
-  <h3>1. Add JitPack repository</h3>
-  <p>In <code>settings.gradle.kts</code>:</p>
-  <pre><code>dependencyResolutionManagement {
-    repositories {
-        google()
-        mavenCentral()
-        maven { url = uri("https://jitpack.io") }
-    }
-}</code></pre>
+  <p>Maven Central is available by default — just add the dependency:</p>
 
-  <h3>2. Add dependency</h3>
   <pre><code>commonMain.dependencies {
     implementation("net.zagart.navigation:core:1.0.0")
 }</code></pre>
-
-  <div class="info-box warn">
-    <strong>iOS Support:</strong> JitPack builds on Linux and cannot produce iOS native binaries (<code>.klib</code>).
-    To use on iOS, include as a <strong>Git Submodule</strong> or <strong>Gradle Composite Build</strong> built on macOS.
-  </div>
 
   <h2>Quick Start</h2>
   <pre><code><span class="token-comment">// Define a destination</span>
@@ -114,7 +100,13 @@
 
   <h2>Versioning &amp; Releases</h2>
   <p>Follows <strong>Semantic Versioning</strong> with phases: <code>alpha</code>, <code>beta</code>, <code>rc</code>, stable.</p>
-  <p>To release: update version in <code>core/build.gradle.kts</code>, update README, commit, tag, and push. JitPack auto-builds the tag.</p>
+  <p>To publish a new version to Maven Central:</p>
+  <ol>
+    <li>Update <code>version</code> in <code>core/build.gradle.kts</code></li>
+    <li>Run <code>./gradlew :core:publish</code></li>
+    <li>Release from the <a href="https://s01.oss.sonatype.org/">Sonatype staging UI</a></li>
+    <li>Tag and push: <code>git tag v1.0.0 && git push origin v1.0.0</code></li>
+  </ol>
 
   <div class="back"><a href="../">&larr; Back to all libraries</a></div>
 </body>

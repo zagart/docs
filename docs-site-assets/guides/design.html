@@ -58,7 +58,7 @@
   <p class="subtitle">net.zagart.design:{ui,builder}:1.6.5</p>
 
   <div class="info-box">
-    <strong>Published via:</strong> JitPack &middot; No authentication required
+    <strong>Published via:</strong> Maven Central &middot; No authentication required
   </div>
 
   <h2>Modules</h2>
@@ -70,18 +70,8 @@
 
   <h2>Installation</h2>
 
-  <h3>1. Add JitPack repository</h3>
-  <p>In your root <code>settings.gradle.kts</code> (or root <code>build.gradle.kts</code>):</p>
-  <pre><code>dependencyResolutionManagement {
-    repositories {
-        google()
-        mavenCentral()
-        maven { url = uri("https://jitpack.io") }
-    }
-}</code></pre>
+  <p>Maven Central is available by default — just add the dependency:</p>
 
-  <h3>2. Add dependencies</h3>
-  <p>In your module's <code>build.gradle.kts</code>:</p>
   <pre><code>commonMain.dependencies {
     implementation("net.zagart.design:ui:1.6.5")
     implementation("net.zagart.design:builder:1.6.5")
@@ -110,7 +100,13 @@
 
   <h2>Versioning &amp; Releases</h2>
   <p>Follows <strong>Semantic Versioning</strong> with release phases: <code>alpha</code>, <code>beta</code>, <code>rc</code>, stable.</p>
-  <p>To release: update version in <code>ui/build.gradle.kts</code> and <code>builder/build.gradle.kts</code>, commit, tag, and push. JitPack auto-builds the tag.</p>
+  <p>To publish a new version to Maven Central:</p>
+  <ol>
+    <li>Update <code>version</code> in <code>ui/build.gradle.kts</code> and <code>builder/build.gradle.kts</code></li>
+    <li>Run <code>./gradlew :ui:publish :builder:publish</code></li>
+    <li>Release from the <a href="https://s01.oss.sonatype.org/">Sonatype staging UI</a></li>
+    <li>Tag and push: <code>git tag v1.0.0 && git push origin v1.0.0</code></li>
+  </ol>
 
   <div class="back"><a href="../">&larr; Back to all libraries</a></div>
 </body>

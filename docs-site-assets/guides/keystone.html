@@ -44,11 +44,9 @@
     .back a:hover { text-decoration: underline; }
     .info-box {
       background: #1c2128; border: 1px solid var(--border); border-radius: 8px;
-      padding: 1rem; margin-bottom: 1rem; border-left: 3px solid #e3b341;
+      padding: 1rem; margin-bottom: 1rem; border-left: 3px solid #3fb950;
     }
-    .info-box strong { color: #e3b341; }
-    .info-box.ok { border-left-color: #3fb950; }
-    .info-box.ok strong { color: #3fb950; }
+    .info-box strong { color: #3fb950; }
     table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
     th, td { text-align: left; padding: 0.5rem; border-bottom: 1px solid var(--border); }
     th { color: var(--text-muted); font-weight: 600; }
@@ -59,39 +57,13 @@
   <p class="subtitle">net.zagart.keystone:core:X.Y.Z</p>
 
   <div class="info-box">
-    <strong>Published via:</strong> GitHub Packages &middot; Authentication required (PAT with <code>read:packages</code>)
+    <strong>Published via:</strong> Maven Central &middot; No authentication required
   </div>
 
   <h2>Installation</h2>
 
-  <h3>1. Authentication</h3>
-  <p>Create a GitHub Personal Access Token with <code>read:packages</code> scope, then add to <code>~/.gradle/gradle.properties</code>:</p>
-  <pre><code>gpr.user=YOUR_GITHUB_USERNAME
-gpr.token=YOUR_GITHUB_PERSONAL_ACCESS_TOKEN</code></pre>
+  <p>Add the dependency to your module's <code>build.gradle.kts</code> — Maven Central is already available by default in Gradle projects:</p>
 
-  <p>For CI, use environment variables:</p>
-  <pre><code><span class="token-comment"># In your CI config:</span>
-GITHUB_ACTOR=${{ github.actor }}
-ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}</code></pre>
-
-  <h3>2. Add GitHub Packages repository</h3>
-  <p>In <code>settings.gradle.kts</code>:</p>
-  <pre><code>dependencyResolutionManagement {
-    repositories {
-        google()
-        mavenCentral()
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/zagart/keystone")
-            credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("ACCESS_TOKEN")
-            }
-        }
-    }
-}</code></pre>
-
-  <h3>3. Add dependency</h3>
   <pre><code>commonMain.dependencies {
     implementation("net.zagart.keystone:core:X.Y.Z")
 }</code></pre>
@@ -135,14 +107,13 @@ storage.<span class="token-func">putEntity</span>(profile)
     <tr><td>JVM</td><td><code>platformContext = null</code></td></tr>
   </table>
 
-  <h2>Publishing</h2>
-  <p>To publish a new version:</p>
+  <h2>Publishing to Maven Central</h2>
+  <p>To publish a new version to Maven Central:</p>
   <ol>
     <li>Update <code>version</code> in <code>core/build.gradle.kts</code></li>
-    <li>Run <code>./gradlew :core:publishAllPublicationsToGitHubPackagesRepository</code></li>
+    <li>Run <code>./gradlew :core:publishAllPublicationsToMavenCentral</code></li>
     <li>Tag and push: <code>git tag vX.Y.Z && git push origin vX.Y.Z</code></li>
   </ol>
-  <p>Requires <code>gpr.user</code> / <code>gpr.token</code> in <code>~/.gradle/gradle.properties</code> with <code>write:packages</code> scope.</p>
 
   <div class="back"><a href="../">&larr; Back to all libraries</a></div>
 </body>
