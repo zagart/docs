@@ -55,7 +55,7 @@
 </head>
 <body>
   <h1>Design — Setup Guide</h1>
-  <p class="subtitle">com.github.zagart.design:{ui,builder}:1.6.5</p>
+  <p class="subtitle">net.zagart.design:{ui,builder}:1.6.5</p>
 
   <div class="info-box">
     <strong>Published via:</strong> JitPack &middot; No authentication required
@@ -64,8 +64,8 @@
   <h2>Modules</h2>
   <table>
     <tr><th>Module</th><th>Artifact</th><th>Targets</th></tr>
-    <tr><td><code>:ui</code></td><td><code>com.github.zagart.design:ui</code></td><td>Android, JVM, iOS</td></tr>
-    <tr><td><code>:builder</code></td><td><code>com.github.zagart.design:builder</code></td><td>Android, JVM</td></tr>
+    <tr><td><code>:ui</code></td><td><code>net.zagart.design:ui</code></td><td>Android, JVM, iOS</td></tr>
+    <tr><td><code>:builder</code></td><td><code>net.zagart.design:builder</code></td><td>Android, JVM</td></tr>
   </table>
 
   <h2>Installation</h2>
@@ -83,19 +83,19 @@
   <h3>2. Add dependencies</h3>
   <p>In your module's <code>build.gradle.kts</code>:</p>
   <pre><code>commonMain.dependencies {
-    implementation("com.github.zagart.design:ui:1.6.5")
-    implementation("com.github.zagart.design:builder:1.6.5")
+    implementation("net.zagart.design:ui:1.6.5")
+    implementation("net.zagart.design:builder:1.6.5")
 }</code></pre>
 
   <h2>Basic Usage</h2>
-  <pre><code><span class="token-keyword">import</span> com.zagart.design.ui.DesignTheme
+  <pre><code><span class="token-keyword">import</span> net.zagart.design.ui.DesignTheme
 
 <span class="token-func">DesignTheme</span> {
     // Your Compose content
 }</code></pre>
 
-  <pre><code><span class="token-keyword">import</span> com.zagart.design.ui.components.Button
-<span class="token-keyword">import</span> com.zagart.design.ui.components.listitem.ListItem
+  <pre><code><span class="token-keyword">import</span> net.zagart.design.ui.components.Button
+<span class="token-keyword">import</span> net.zagart.design.ui.components.listitem.ListItem
 
 <span class="token-func">Button</span>(<span class="token-string">"Click me"</span>, onClick = { /* ... */ })
 <span class="token-func">ListItem</span>(label = <span class="token-string">"Settings"</span>, onClick = { /* ... */ })</code></pre>
