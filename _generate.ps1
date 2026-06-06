@@ -1,8 +1,8 @@
 param([switch]$Daemon)
 $NoDaemon = if (-not $Daemon) { "--no-daemon" } else { "" }
 
-$RepoRoot = Split-Path -Parent $PSScriptRoot
-$DocsSite = Join-Path $RepoRoot "docs-site"
+$WorkspaceRoot = Split-Path -Parent $PSScriptRoot
+$DocsSite = Join-Path $PSScriptRoot "docs-site"
 
 $Projects = @(
     @{ Dir = "design";   Tasks = @(":ui:dokkaGenerate", ":builder:dokkaGenerate") }
@@ -13,7 +13,7 @@ $Projects = @(
 Write-Host "=== Generating API documentation ===" -ForegroundColor Cyan
 
 foreach ($Project in $Projects) {
-    $ProjectDir = Join-Path $RepoRoot $Project.Dir
+    $ProjectDir = Join-Path $WorkspaceRoot $Project.Dir
 
     Write-Host "`n>>> $($Project.Dir)" -ForegroundColor Yellow
     Push-Location $ProjectDir
