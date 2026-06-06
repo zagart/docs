@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Navigation — Setup Guide</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 2rem;
+      max-width: 860px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+    h1 { font-size: 1.75rem; margin-bottom: 0.25rem; }
+    h2 { font-size: 1.25rem; margin-top: 2rem; margin-bottom: 0.5rem; }
+    h3 { font-size: 1.05rem; margin-top: 1.25rem; }
+    .subtitle { color: var(--text-muted); margin-bottom: 1.5rem; }
+    p { margin-bottom: 0.75rem; }
+    pre {
+      background: #1c2128; border: 1px solid var(--border); border-radius: 8px;
+      padding: 1rem; overflow-x: auto; margin-bottom: 1rem;
+    }
+    code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.875rem; color: #f0f6fc; }
+    pre code { color: inherit; }
+    .token-comment { color: #8b949e; }
+    .token-keyword { color: #ff7b72; }
+    .token-string { color: #a5d6ff; }
+    .token-func { color: #d2a8ff; }
+    a { color: var(--accent); }
+    .back { margin-top: 2rem; }
+    .back a { color: var(--accent); text-decoration: none; }
+    .back a:hover { text-decoration: underline; }
+    .info-box {
+      background: #1c2128; border: 1px solid var(--border); border-radius: 8px;
+      padding: 1rem; margin-bottom: 1rem; border-left: 3px solid var(--accent);
+    }
+    .info-box strong { color: var(--accent); }
+    .info-box.warn { border-left-color: #e3b341; }
+    .info-box.warn strong { color: #e3b341; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+    th, td { text-align: left; padding: 0.5rem; border-bottom: 1px solid var(--border); }
+    th { color: var(--text-muted); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>Navigation — Setup Guide</h1>
+  <p class="subtitle">net.zagart.navigation:core:1.0.0</p>
+
+  <div class="info-box">
+    <strong>Published via:</strong> JitPack &middot; No authentication required
+  </div>
+
+  <h2>Installation</h2>
+
+  <h3>1. Add JitPack repository</h3>
+  <p>In <code>settings.gradle.kts</code>:</p>
+  <pre><code>dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url = uri("https://jitpack.io") }
+    }
+}</code></pre>
+
+  <h3>2. Add dependency</h3>
+  <pre><code>commonMain.dependencies {
+    implementation("net.zagart.navigation:core:1.0.0")
+}</code></pre>
+
+  <div class="info-box warn">
+    <strong>iOS Support:</strong> JitPack builds on Linux and cannot produce iOS native binaries (<code>.klib</code>).
+    To use on iOS, include as a <strong>Git Submodule</strong> or <strong>Gradle Composite Build</strong> built on macOS.
+  </div>
+
+  <h2>Quick Start</h2>
+  <pre><code><span class="token-comment">// Define a destination</span>
+<span class="token-keyword">data class</span> HomeScreen(<span class="token-keyword">override val</span> args: Args = Args())
+    : Destination
+
+<span class="token-comment">// Create controller</span>
+<span class="token-keyword">val</span> controller = <span class="token-func">rememberNavigationController</span>(
+    startDestinations = listOf(HomeScreen())
+)
+
+<span class="token-comment">// Wire up the container</span>
+<span class="token-func">NavigationContainer</span>(
+    controller = controller,
+    scope = {
+        screen&lt;HomeScreen&gt; { HomeContent() }
+    }
+)</code></pre>
+
+  <h2>Features</h2>
+  <table>
+    <tr><th>Feature</th><th>Details</th></tr>
+    <tr><td>Type-safe navigation</td><td>Destinations as classes implementing <code>Destination</code></td></tr>
+    <tr><td>Backstack management</td><td>Multiple independent backstacks (tabs/sections)</td></tr>
+    <tr><td>Animated transitions</td><td>Slide and None transitions with configurable duration</td></tr>
+    <tr><td>State persistence</td><td>Automatic save/restore via <code>kotlinx-serialization</code></td></tr>
+    <tr><td>Predictive back gesture</td><td>Supported on Android</td></tr>
+  </table>
+
+  <h2>Versioning &amp; Releases</h2>
+  <p>Follows <strong>Semantic Versioning</strong> with phases: <code>alpha</code>, <code>beta</code>, <code>rc</code>, stable.</p>
+  <p>To release: update version in <code>core/build.gradle.kts</code>, update README, commit, tag, and push. JitPack auto-builds the tag.</p>
+
+  <div class="back"><a href="../">&larr; Back to all libraries</a></div>
+</body>
+</html>

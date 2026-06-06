@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keystone — Setup Guide</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 2rem;
+      max-width: 860px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+    h1 { font-size: 1.75rem; margin-bottom: 0.25rem; }
+    h2 { font-size: 1.25rem; margin-top: 2rem; margin-bottom: 0.5rem; }
+    h3 { font-size: 1.05rem; margin-top: 1.25rem; }
+    .subtitle { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem; }
+    p { margin-bottom: 0.75rem; }
+    pre {
+      background: #1c2128; border: 1px solid var(--border); border-radius: 8px;
+      padding: 1rem; overflow-x: auto; margin-bottom: 1rem;
+    }
+    code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.875rem; color: #f0f6fc; }
+    pre code { color: inherit; }
+    .token-comment { color: #8b949e; }
+    .token-keyword { color: #ff7b72; }
+    .token-string { color: #a5d6ff; }
+    .token-func { color: #d2a8ff; }
+    a { color: var(--accent); }
+    .back { margin-top: 2rem; }
+    .back a { color: var(--accent); text-decoration: none; }
+    .back a:hover { text-decoration: underline; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+    th, td { text-align: left; padding: 0.5rem; border-bottom: 1px solid var(--border); }
+    th { color: var(--text-muted); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>Keystone</h1>
+  <p class="subtitle">net.zagart.keystone — module: core</p>
+
+  <h2>Module</h2>
+  <table>
+    <tr><th>Module</th><th>Artifact</th><th>Targets</th></tr>
+    <tr><td><code>:core</code></td><td><code>net.zagart.keystone:core</code></td><td>Android, JVM, iOS</td></tr>
+  </table>
+
+  <h2>Installation</h2>
+  <pre><code>commonMain.dependencies {
+    implementation("net.zagart.keystone:core:X.Y.Z")
+}</code></pre>
+
+  <h2>Basic Usage</h2>
+  <pre><code><span class="token-keyword">val</span> storage = Keystone.Storage.<span class="token-func">create</span>(name = <span class="token-string">"my_app"</span>)
+
+<span class="token-comment">// Write</span>
+storage.<span class="token-func">putString</span>(<span class="token-string">"user"</span>, <span class="token-string">"name"</span>, <span class="token-string">"Alice"</span>)
+storage.<span class="token-func">putBoolean</span>(<span class="token-string">"user"</span>, <span class="token-string">"notifications"</span>, true)
+
+<span class="token-comment">// Read</span>
+<span class="token-keyword">val</span> name = storage.<span class="token-func">getString</span>(<span class="token-string">"user"</span>, <span class="token-string">"name"</span>, default = <span class="token-string">"Guest"</span>)
+
+<span class="token-comment">// Observe changes</span>
+storage.<span class="token-func">observe</span>(<span class="token-string">"user"</span>) {
+    string(<span class="token-string">"name"</span>)
+    boolean(<span class="token-string">"notifications"</span>)
+}.<span class="token-func">collect</span> { snapshot <span class="token-keyword">-&gt;</span>
+    <span class="token-func">updateUI</span>(snapshot)
+}</code></pre>
+
+  <h2>Features</h2>
+  <table>
+    <tr><th>Feature</th><th>Details</th></tr>
+    <tr><td>Scope-based storage</td><td>Organize data into named scopes (e.g. <code>"settings"</code>, <code>"user_profile"</code>)</td></tr>
+    <tr><td>Reactive observation</td><td>Observe changes via <code>Flow&lt;Snapshot&gt;</code> using the DSL builder</td></tr>
+    <tr><td>Entity persistence</td><td><code>@Entity</code>-annotated classes persisted via SQLDelight with <code>@Embedded</code> flattening</td></tr>
+    <tr><td>Type-safe keys</td><td>Define keys and defaults using <code>ObservationBuilder</code> DSL</td></tr>
+    <tr><td>Compose-agnostic</td><td>Pure Kotlin — no Compose dependency</td></tr>
+  </table>
+
+  <h2>Platform Notes</h2>
+  <table>
+    <tr><th>Platform</th><th><code>create()</code> context</th></tr>
+    <tr><td>Android</td><td>Requires <code>Context</code> as <code>platformContext</code></td></tr>
+    <tr><td>iOS</td><td><code>platformContext = null</code></td></tr>
+    <tr><td>JVM</td><td><code>platformContext = null</code></td></tr>
+  </table>
+
+  <h2>Versioning &amp; Releases</h2>
+  <p>Follows <strong>Semantic Versioning</strong>.</p>
+  <ol>
+    <li>Update <code>version</code> in <code>core/build.gradle.kts</code></li>
+    <li>Run <code>./gradlew :core:publish</code></li>
+    <li>Release from the <a href="https://s01.oss.sonatype.org/">Sonatype staging UI</a></li>
+    <li>Tag and push: <code>git tag vX.Y.Z && git push origin vX.Y.Z</code></li>
+  </ol>
+
+  <div class="back"><a href="../">&larr; Back</a></div>
+</body>
+</html>

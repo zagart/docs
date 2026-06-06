@@ -1,0 +1,85 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:net.zagart.navigation.container////PointingToDeclaration/core/net.zagart.navigation.container/index.html
+$dokka.location:net.zagart.navigation.container/BackstackSwitchTransition///PointingToDeclaration/core/net.zagart.navigation.container/-backstack-switch-transition/index.html
+$dokka.location:net.zagart.navigation.container/NavigationConfiguration///PointingToDeclaration/core/net.zagart.navigation.container/-navigation-configuration/index.html
+$dokka.location:net.zagart.navigation.container/NavigationConfiguration/animateTransitions/#/PointingToDeclaration/core/net.zagart.navigation.container/-navigation-configuration/animate-transitions.html
+$dokka.location:net.zagart.navigation.container/NavigationConfiguration/bottomNavigation/#/PointingToDeclaration/core/net.zagart.navigation.container/-navigation-configuration/bottom-navigation.html
+$dokka.location:net.zagart.navigation.container/NavigationConfiguration/screenTransition/#/PointingToDeclaration/core/net.zagart.navigation.container/-navigation-configuration/screen-transition.html
+$dokka.location:net.zagart.navigation.container/NavigationConfiguration/switchTransition/#/PointingToDeclaration/core/net.zagart.navigation.container/-navigation-configuration/switch-transition.html
+$dokka.location:net.zagart.navigation.container/NavigationScope///PointingToDeclaration/core/net.zagart.navigation.container/-navigation-scope/index.html
+$dokka.location:net.zagart.navigation.container/NavigationScope/NavigationScope/#net.zagart.navigation.NavigationController/PointingToDeclaration/core/net.zagart.navigation.container/-navigation-scope/-navigation-scope.html
+$dokka.location:net.zagart.navigation.container/NavigationScope/screen/#kotlin.reflect.KClass[TypeParam(bounds=[net.zagart.navigation.Destination])]#kotlin.Function1[TypeParam(bounds=[net.zagart.navigation.Destination]),kotlin.Unit]/PointingToDeclaration/core/net.zagart.navigation.container/-navigation-scope/screen.html
+$dokka.location:net.zagart.navigation.controller////PointingToDeclaration/core/net.zagart.navigation.controller/index.html
+$dokka.location:net.zagart.navigation.controller/NavigationControllerSaver.Companion///PointingToDeclaration/core/net.zagart.navigation.controller/-navigation-controller-saver/-companion/index.html
+$dokka.location:net.zagart.navigation.controller/NavigationControllerSaver///PointingToDeclaration/core/net.zagart.navigation.controller/-navigation-controller-saver/index.html
+$dokka.location:net.zagart.navigation.controller/NavigationControllerSaver/NavigationControllerSaver/#kotlinx.serialization.json.Json#kotlin.Function1[kotlin.String,kotlin.Unit]/PointingToDeclaration/core/net.zagart.navigation.controller/-navigation-controller-saver/-navigation-controller-saver.html
+$dokka.location:net.zagart.navigation.controller/NavigationControllerSaver/restore/#kotlin.String/PointingToDeclaration/core/net.zagart.navigation.controller/-navigation-controller-saver/restore.html
+$dokka.location:net.zagart.navigation.controller/NavigationControllerSaver/save/androidx.compose.runtime.saveable.SaverScope#net.zagart.navigation.NavigationController/PointingToDeclaration/core/net.zagart.navigation.controller/-navigation-controller-saver/save.html
+$dokka.location:net.zagart.navigation.extensions////PointingToDeclaration/core/net.zagart.navigation.extensions/index.html
+$dokka.location:net.zagart.navigation.extensions//animate/#kotlin.Any#kotlin.Boolean#kotlin.Int#kotlin.Float#androidx.compose.animation.core.Easing#kotlin.Function1[kotlin.Float,kotlin.Unit]#kotlin.Function0[kotlin.Unit]/PointingToDeclaration/core/net.zagart.navigation.extensions/animate.html
+$dokka.location:net.zagart.navigation.extensions//transition/androidx.compose.ui.Modifier#kotlin.Float#kotlin.Boolean#net.zagart.navigation.transition.ModifierAnimation/PointingToDeclaration/core/net.zagart.navigation.extensions/transition.html
+$dokka.location:net.zagart.navigation.transition////PointingToDeclaration/core/net.zagart.navigation.transition/index.html
+$dokka.location:net.zagart.navigation.transition/ModifierAnimation///PointingToDeclaration/core/net.zagart.navigation.transition/-modifier-animation/index.html
+$dokka.location:net.zagart.navigation.transition/ModifierAnimation/ModifierAnimation/#net.zagart.navigation.Transition#kotlin.Float#kotlin.Float#kotlin.Boolean#kotlin.Function1[kotlin.Float,kotlin.Unit]#kotlin.Function0[kotlin.Unit]/PointingToDeclaration/core/net.zagart.navigation.transition/-modifier-animation/-modifier-animation.html
+$dokka.location:net.zagart.navigation.transition/ModifierAnimation/fromBottom/#kotlin.Float/PointingToDeclaration/core/net.zagart.navigation.transition/-modifier-animation/from-bottom.html
+$dokka.location:net.zagart.navigation.transition/ModifierAnimation/fromTop/#kotlin.Float/PointingToDeclaration/core/net.zagart.navigation.transition/-modifier-animation/from-top.html
+$dokka.location:net.zagart.navigation.transition/ModifierAnimation/horizontalDistance/#/PointingToDeclaration/core/net.zagart.navigation.transition/-modifier-animation/horizontal-distance.html
+$dokka.location:net.zagart.navigation.transition/ModifierAnimation/isExitTransition/#/PointingToDeclaration/core/net.zagart.navigation.transition/-modifier-animation/is-exit-transition.html
+$dokka.location:net.zagart.navigation.transition/ModifierAnimation/onTransitionEnd/#/PointingToDeclaration/core/net.zagart.navigation.transition/-modifier-animation/on-transition-end.html
+$dokka.location:net.zagart.navigation.transition/ModifierAnimation/onTransitionProgress/#/PointingToDeclaration/core/net.zagart.navigation.transition/-modifier-animation/on-transition-progress.html
+$dokka.location:net.zagart.navigation.transition/ModifierAnimation/toBottom/#kotlin.Float/PointingToDeclaration/core/net.zagart.navigation.transition/-modifier-animation/to-bottom.html
+$dokka.location:net.zagart.navigation.transition/ModifierAnimation/toTop/#kotlin.Float/PointingToDeclaration/core/net.zagart.navigation.transition/-modifier-animation/to-top.html
+$dokka.location:net.zagart.navigation.transition/ModifierAnimation/transition/#/PointingToDeclaration/core/net.zagart.navigation.transition/-modifier-animation/transition.html
+$dokka.location:net.zagart.navigation.transition/ModifierAnimation/verticalDistance/#/PointingToDeclaration/core/net.zagart.navigation.transition/-modifier-animation/vertical-distance.html
+$dokka.location:net.zagart.navigation.ui////PointingToDeclaration/core/net.zagart.navigation.ui/index.html
+$dokka.location:net.zagart.navigation.ui//ModifierApplier/#androidx.compose.ui.Modifier#kotlin.Function0[kotlin.Unit]/PointingToDeclaration/core/net.zagart.navigation.ui/-modifier-applier.html
+$dokka.location:net.zagart.navigation////PointingToDeclaration/core/net.zagart.navigation/index.html
+$dokka.location:net.zagart.navigation//LocalPredictiveBackProgress/#/PointingToDeclaration/core/net.zagart.navigation/-local-predictive-back-progress.html
+$dokka.location:net.zagart.navigation//NavigationContainer/#kotlin.Any#kotlin.Function0[kotlin.Unit]#androidx.compose.ui.geometry.Size#net.zagart.navigation.NavigationController#kotlin.Function1[androidx.compose.foundation.layout.BoxScope,kotlin.Unit]?#kotlin.Function1[androidx.compose.foundation.layout.BoxScope,kotlin.Unit]?#kotlin.Function0[kotlin.Unit]?#kotlin.Function0[kotlin.Unit]?#kotlin.Function1[net.zagart.navigation.container.NavigationConfiguration,kotlin.Unit]#kotlin.Function1[net.zagart.navigation.container.NavigationScope,kotlin.Unit]/PointingToDeclaration/core/net.zagart.navigation/-navigation-container.html
+$dokka.location:net.zagart.navigation//rememberNavigationController/#net.zagart.navigation.controller.NavigationControllerSaver#kotlin.collections.List[net.zagart.navigation.Destination]/PointingToDeclaration/core/net.zagart.navigation/remember-navigation-controller.html
+$dokka.location:net.zagart.navigation/BackDestination///PointingToDeclaration/core/net.zagart.navigation/-back-destination/index.html
+$dokka.location:net.zagart.navigation/BackDestination/BackDestination/#net.zagart.navigation.Destination.Result?#net.zagart.navigation.Destination.Args/PointingToDeclaration/core/net.zagart.navigation/-back-destination/-back-destination.html
+$dokka.location:net.zagart.navigation/BackDestination/args/#/PointingToDeclaration/core/net.zagart.navigation/-back-destination/args.html
+$dokka.location:net.zagart.navigation/BackDestination/result/#/PointingToDeclaration/core/net.zagart.navigation/-back-destination/result.html
+$dokka.location:net.zagart.navigation/BackstackDestination///PointingToDeclaration/core/net.zagart.navigation/-backstack-destination/index.html
+$dokka.location:net.zagart.navigation/BackstackDestination/BackstackDestination/#kotlin.Int#net.zagart.navigation.Destination.Args/PointingToDeclaration/core/net.zagart.navigation/-backstack-destination/-backstack-destination.html
+$dokka.location:net.zagart.navigation/BackstackDestination/args/#/PointingToDeclaration/core/net.zagart.navigation/-backstack-destination/args.html
+$dokka.location:net.zagart.navigation/BackstackDestination/backstackIndex/#/PointingToDeclaration/core/net.zagart.navigation/-backstack-destination/backstack-index.html
+$dokka.location:net.zagart.navigation/Destination.Args///PointingToDeclaration/core/net.zagart.navigation/-destination/-args/index.html
+$dokka.location:net.zagart.navigation/Destination.Args/Args/#kotlin.Int#net.zagart.navigation.Transition?#kotlin.String#kotlin.Boolean#kotlin.Boolean#kotlin.Boolean#net.zagart.navigation.Destination.Result?/PointingToDeclaration/core/net.zagart.navigation/-destination/-args/-args.html
+$dokka.location:net.zagart.navigation/Destination.Args/backstackIndex/#/PointingToDeclaration/core/net.zagart.navigation/-destination/-args/backstack-index.html
+$dokka.location:net.zagart.navigation/Destination.Args/key/#/PointingToDeclaration/core/net.zagart.navigation/-destination/-args/key.html
+$dokka.location:net.zagart.navigation/Destination.Args/result/#/PointingToDeclaration/core/net.zagart.navigation/-destination/-args/result.html
+$dokka.location:net.zagart.navigation/Destination.Args/showNavigationBar/#/PointingToDeclaration/core/net.zagart.navigation/-destination/-args/show-navigation-bar.html
+$dokka.location:net.zagart.navigation/Destination.Args/showTopBar/#/PointingToDeclaration/core/net.zagart.navigation/-destination/-args/show-top-bar.html
+$dokka.location:net.zagart.navigation/Destination.Args/skipBackstack/#/PointingToDeclaration/core/net.zagart.navigation/-destination/-args/skip-backstack.html
+$dokka.location:net.zagart.navigation/Destination.Args/transition/#/PointingToDeclaration/core/net.zagart.navigation/-destination/-args/transition.html
+$dokka.location:net.zagart.navigation/Destination.Result///PointingToDeclaration/core/net.zagart.navigation/-destination/-result/index.html
+$dokka.location:net.zagart.navigation/Destination///PointingToDeclaration/core/net.zagart.navigation/-destination/index.html
+$dokka.location:net.zagart.navigation/Destination/args/#/PointingToDeclaration/core/net.zagart.navigation/-destination/args.html
+$dokka.location:net.zagart.navigation/NavigationController///PointingToDeclaration/core/net.zagart.navigation/-navigation-controller/index.html
+$dokka.location:net.zagart.navigation/NavigationController/NavigationController/#kotlin.collections.List[net.zagart.navigation.Destination]#kotlin.Function1[kotlin.String,kotlin.Unit]/PointingToDeclaration/core/net.zagart.navigation/-navigation-controller/-navigation-controller.html
+$dokka.location:net.zagart.navigation/NavigationController/currentDestination/#/PointingToDeclaration/core/net.zagart.navigation/-navigation-controller/current-destination.html
+$dokka.location:net.zagart.navigation/NavigationController/navigate/#TypeParam(bounds=[net.zagart.navigation.Destination])/PointingToDeclaration/core/net.zagart.navigation/-navigation-controller/navigate.html
+$dokka.location:net.zagart.navigation/NavigationController/previousDestination/#/PointingToDeclaration/core/net.zagart.navigation/-navigation-controller/previous-destination.html
+$dokka.location:net.zagart.navigation/Transition.None///PointingToDeclaration/core/net.zagart.navigation/-transition/-none/index.html
+$dokka.location:net.zagart.navigation/Transition.None/None/#kotlin.Int#kotlin.Boolean?#kotlin.Boolean?/PointingToDeclaration/core/net.zagart.navigation/-transition/-none/-none.html
+$dokka.location:net.zagart.navigation/Transition.None/duration/#/PointingToDeclaration/core/net.zagart.navigation/-transition/-none/duration.html
+$dokka.location:net.zagart.navigation/Transition.None/isReversed/#/PointingToDeclaration/core/net.zagart.navigation/-transition/-none/is-reversed.html
+$dokka.location:net.zagart.navigation/Transition.None/isVertical/#/PointingToDeclaration/core/net.zagart.navigation/-transition/-none/is-vertical.html
+$dokka.location:net.zagart.navigation/Transition.Slide///PointingToDeclaration/core/net.zagart.navigation/-transition/-slide/index.html
+$dokka.location:net.zagart.navigation/Transition.Slide/Slide/#kotlin.Int#kotlin.Boolean?#kotlin.Boolean/PointingToDeclaration/core/net.zagart.navigation/-transition/-slide/-slide.html
+$dokka.location:net.zagart.navigation/Transition.Slide/duration/#/PointingToDeclaration/core/net.zagart.navigation/-transition/-slide/duration.html
+$dokka.location:net.zagart.navigation/Transition.Slide/isReversed/#/PointingToDeclaration/core/net.zagart.navigation/-transition/-slide/is-reversed.html
+$dokka.location:net.zagart.navigation/Transition.Slide/isVertical/#/PointingToDeclaration/core/net.zagart.navigation/-transition/-slide/is-vertical.html
+$dokka.location:net.zagart.navigation/Transition///PointingToDeclaration/core/net.zagart.navigation/-transition/index.html
+$dokka.location:net.zagart.navigation/Transition/duration/#/PointingToDeclaration/core/net.zagart.navigation/-transition/duration.html
+$dokka.location:net.zagart.navigation/Transition/isReversed/#/PointingToDeclaration/core/net.zagart.navigation/-transition/is-reversed.html
+$dokka.location:net.zagart.navigation/Transition/isVertical/#/PointingToDeclaration/core/net.zagart.navigation/-transition/is-vertical.html
+net.zagart.navigation
+net.zagart.navigation.container
+net.zagart.navigation.controller
+net.zagart.navigation.extensions
+net.zagart.navigation.transition
+net.zagart.navigation.ui

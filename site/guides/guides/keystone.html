@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keystone — Setup Guide</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 2rem;
+      max-width: 860px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+    h1 { font-size: 1.75rem; margin-bottom: 0.25rem; }
+    h2 { font-size: 1.25rem; margin-top: 2rem; margin-bottom: 0.5rem; }
+    h3 { font-size: 1.05rem; margin-top: 1.25rem; }
+    .subtitle { color: var(--text-muted); margin-bottom: 1.5rem; }
+    p { margin-bottom: 0.75rem; }
+    pre {
+      background: #1c2128; border: 1px solid var(--border); border-radius: 8px;
+      padding: 1rem; overflow-x: auto; margin-bottom: 1rem;
+    }
+    code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.875rem; color: #f0f6fc; }
+    pre code { color: inherit; }
+    .token-comment { color: #8b949e; }
+    .token-keyword { color: #ff7b72; }
+    .token-string { color: #a5d6ff; }
+    .token-func { color: #d2a8ff; }
+    a { color: var(--accent); }
+    .back { margin-top: 2rem; }
+    .back a { color: var(--accent); text-decoration: none; }
+    .back a:hover { text-decoration: underline; }
+    .info-box {
+      background: #1c2128; border: 1px solid var(--border); border-radius: 8px;
+      padding: 1rem; margin-bottom: 1rem; border-left: 3px solid #e3b341;
+    }
+    .info-box strong { color: #e3b341; }
+    .info-box.ok { border-left-color: #3fb950; }
+    .info-box.ok strong { color: #3fb950; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+    th, td { text-align: left; padding: 0.5rem; border-bottom: 1px solid var(--border); }
+    th { color: var(--text-muted); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>Keystone — Setup Guide</h1>
+  <p class="subtitle">net.zagart.keystone:core:X.Y.Z</p>
+
+  <div class="info-box">
+    <strong>Published via:</strong> GitHub Packages &middot; Authentication required (PAT with <code>read:packages</code>)
+  </div>
+
+  <h2>Installation</h2>
+
+  <h3>1. Authentication</h3>
+  <p>Create a GitHub Personal Access Token with <code>read:packages</code> scope, then add to <code>~/.gradle/gradle.properties</code>:</p>
+  <pre><code>gpr.user=YOUR_GITHUB_USERNAME
+gpr.token=YOUR_GITHUB_PERSONAL_ACCESS_TOKEN</code></pre>
+
+  <p>For CI, use environment variables:</p>
+  <pre><code><span class="token-comment"># In your CI config:</span>
+GITHUB_ACTOR=${{ github.actor }}
+ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}</code></pre>
+
+  <h3>2. Add GitHub Packages repository</h3>
+  <p>In <code>settings.gradle.kts</code>:</p>
+  <pre><code>dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/zagart/keystone")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("ACCESS_TOKEN")
+            }
+        }
+    }
+}</code></pre>
+
+  <h3>3. Add dependency</h3>
+  <pre><code>commonMain.dependencies {
+    implementation("net.zagart.keystone:core:X.Y.Z")
+}</code></pre>
+
+  <h2>Quick Start</h2>
+  <pre><code><span class="token-keyword">val</span> storage = Keystone.Storage.<span class="token-func">create</span>(name = <span class="token-string">"my_app"</span>)
+
+<span class="token-comment">// Write</span>
+storage.<span class="token-func">putString</span>(<span class="token-string">"user"</span>, <span class="token-string">"name"</span>, <span class="token-string">"Alice"</span>)
+storage.<span class="token-func">putBoolean</span>(<span class="token-string">"user"</span>, <span class="token-string">"notifications"</span>, true)
+
+<span class="token-comment">// Read</span>
+<span class="token-keyword">val</span> name = storage.<span class="token-func">getString</span>(<span class="token-string">"user"</span>, <span class="token-string">"name"</span>, default = <span class="token-string">"Guest"</span>)
+
+<span class="token-comment">// Observe</span>
+storage.<span class="token-func">observe</span>(<span class="token-string">"user"</span>) {
+    string(<span class="token-string">"name"</span>)
+    boolean(<span class="token-string">"notifications"</span>)
+}.<span class="token-func">collect</span> { snapshot <span class="token-keyword">-&gt;</span>
+    <span class="token-func">updateUI</span>(snapshot)
+}</code></pre>
+
+  <h2>Entity Persistence</h2>
+  <pre><code><span class="token-keyword">@Entity</span>(type = <span class="token-string">"user_profile"</span>)
+<span class="token-keyword">data class</span> UserProfile(
+    <span class="token-keyword">@Key</span> <span class="token-keyword">val</span> id: String,
+    <span class="token-keyword">val</span> displayName: String,
+    <span class="token-keyword">@Embedded</span>(prefix = <span class="token-string">"prefs_"</span>)
+    <span class="token-keyword">val</span> preferences: UserPreferences
+)
+
+<span class="token-comment">// Save &amp; load</span>
+storage.<span class="token-func">putEntity</span>(profile)
+<span class="token-keyword">val</span> loaded = storage.<span class="token-func">getEntity</span>&lt;UserProfile&gt;(<span class="token-string">"user_123"</span>)</code></pre>
+
+  <h2>Platform Notes</h2>
+  <table>
+    <tr><th>Platform</th><th><code>create()</code> context</th></tr>
+    <tr><td>Android</td><td>Requires <code>Context</code> as <code>platformContext</code></td></tr>
+    <tr><td>iOS</td><td><code>platformContext = null</code></td></tr>
+    <tr><td>JVM</td><td><code>platformContext = null</code></td></tr>
+  </table>
+
+  <h2>Publishing</h2>
+  <p>To publish a new version:</p>
+  <ol>
+    <li>Update <code>version</code> in <code>core/build.gradle.kts</code></li>
+    <li>Run <code>./gradlew :core:publishAllPublicationsToGitHubPackagesRepository</code></li>
+    <li>Tag and push: <code>git tag vX.Y.Z && git push origin vX.Y.Z</code></li>
+  </ol>
+  <p>Requires <code>gpr.user</code> / <code>gpr.token</code> in <code>~/.gradle/gradle.properties</code> with <code>write:packages</code> scope.</p>
+
+  <div class="back"><a href="../">&larr; Back to all libraries</a></div>
+</body>
+</html>

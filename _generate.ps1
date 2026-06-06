@@ -2,7 +2,7 @@ param([switch]$Daemon)
 $NoDaemon = if (-not $Daemon) { "--no-daemon" } else { "" }
 
 $WorkspaceRoot = Split-Path -Parent $PSScriptRoot
-$DocsSite = Join-Path $PSScriptRoot "docs-site"
+$DocsSite = Join-Path $PSScriptRoot "site"
 
 $Projects = @(
     @{ Dir = "design";   Tasks = @(":ui:dokkaGenerate", ":builder:dokkaGenerate") }
@@ -67,4 +67,4 @@ if (Test-Path $Assets) {
     Write-Host "  Landing pages and guides copied" -ForegroundColor Gray
 }
 
-Write-Host "`n=== Documentation assembled in docs-site/ ===" -ForegroundColor Cyan
+Write-Host "`n=== Documentation assembled in site/ ===" -ForegroundColor Cyan

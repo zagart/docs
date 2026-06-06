@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design — Setup Guide</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+      --accent-dim: #1f6feb;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 2rem;
+      max-width: 860px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+    h1 { font-size: 1.75rem; margin-bottom: 0.25rem; }
+    h2 { font-size: 1.25rem; margin-top: 2rem; margin-bottom: 0.5rem; }
+    h3 { font-size: 1.05rem; margin-top: 1.25rem; }
+    .subtitle { color: var(--text-muted); margin-bottom: 1.5rem; }
+    p { margin-bottom: 0.75rem; }
+    pre {
+      background: #1c2128; border: 1px solid var(--border); border-radius: 8px;
+      padding: 1rem; overflow-x: auto; margin-bottom: 1rem;
+    }
+    code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.875rem; color: #f0f6fc; }
+    pre code { color: inherit; }
+    .token-comment { color: #8b949e; }
+    .token-keyword { color: #ff7b72; }
+    .token-string { color: #a5d6ff; }
+    .token-func { color: #d2a8ff; }
+    a { color: var(--accent); }
+    .back { margin-top: 2rem; }
+    .back a { color: var(--accent); text-decoration: none; }
+    .back a:hover { text-decoration: underline; }
+    .info-box {
+      background: #1c2128; border: 1px solid var(--border); border-radius: 8px;
+      padding: 1rem; margin-bottom: 1rem; border-left: 3px solid var(--accent);
+    }
+    .info-box strong { color: var(--accent); }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+    th, td { text-align: left; padding: 0.5rem; border-bottom: 1px solid var(--border); }
+    th { color: var(--text-muted); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>Design — Setup Guide</h1>
+  <p class="subtitle">net.zagart.design:{ui,builder}:1.6.5</p>
+
+  <div class="info-box">
+    <strong>Published via:</strong> JitPack &middot; No authentication required
+  </div>
+
+  <h2>Modules</h2>
+  <table>
+    <tr><th>Module</th><th>Artifact</th><th>Targets</th></tr>
+    <tr><td><code>:ui</code></td><td><code>net.zagart.design:ui</code></td><td>Android, JVM, iOS</td></tr>
+    <tr><td><code>:builder</code></td><td><code>net.zagart.design:builder</code></td><td>Android, JVM</td></tr>
+  </table>
+
+  <h2>Installation</h2>
+
+  <h3>1. Add JitPack repository</h3>
+  <p>In your root <code>settings.gradle.kts</code> (or root <code>build.gradle.kts</code>):</p>
+  <pre><code>dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url = uri("https://jitpack.io") }
+    }
+}</code></pre>
+
+  <h3>2. Add dependencies</h3>
+  <p>In your module's <code>build.gradle.kts</code>:</p>
+  <pre><code>commonMain.dependencies {
+    implementation("net.zagart.design:ui:1.6.5")
+    implementation("net.zagart.design:builder:1.6.5")
+}</code></pre>
+
+  <h2>Basic Usage</h2>
+  <pre><code><span class="token-keyword">import</span> net.zagart.design.ui.DesignTheme
+
+<span class="token-func">DesignTheme</span> {
+    // Your Compose content
+}</code></pre>
+
+  <pre><code><span class="token-keyword">import</span> net.zagart.design.ui.components.Button
+<span class="token-keyword">import</span> net.zagart.design.ui.components.listitem.ListItem
+
+<span class="token-func">Button</span>(<span class="token-string">"Click me"</span>, onClick = { /* ... */ })
+<span class="token-func">ListItem</span>(label = <span class="token-string">"Settings"</span>, onClick = { /* ... */ })</code></pre>
+
+  <h2>Project Structure</h2>
+  <table>
+    <tr><th>Module</th><th>Description</th></tr>
+    <tr><td><code>:ui</code></td><td>Core UI components (buttons, text fields, icons, lists, navigation bars, etc.) built with Compose Multiplatform + Material3</td></tr>
+    <tr><td><code>:builder</code></td><td>Declarative DSL for constructing screen states; enables backend-driven UI (BDUI) patterns</td></tr>
+    <tr><td><code>:composeApp</code></td><td>Shared Compose app (showcase)</td></tr>
+  </table>
+
+  <h2>Versioning &amp; Releases</h2>
+  <p>Follows <strong>Semantic Versioning</strong> with release phases: <code>alpha</code>, <code>beta</code>, <code>rc</code>, stable.</p>
+  <p>To release: update version in <code>ui/build.gradle.kts</code> and <code>builder/build.gradle.kts</code>, commit, tag, and push. JitPack auto-builds the tag.</p>
+
+  <div class="back"><a href="../">&larr; Back to all libraries</a></div>
+</body>
+</html>
