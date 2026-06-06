@@ -26,7 +26,7 @@
     h1 { font-size: 1.75rem; margin-bottom: 0.25rem; }
     h2 { font-size: 1.25rem; margin-top: 2rem; margin-bottom: 0.5rem; }
     h3 { font-size: 1.05rem; margin-top: 1.25rem; }
-    .subtitle { color: var(--text-muted); margin-bottom: 1.5rem; }
+    .subtitle { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem; }
     p { margin-bottom: 0.75rem; }
     pre {
       background: #1c2128; border: 1px solid var(--border); border-radius: 8px;
@@ -42,38 +42,29 @@
     .back { margin-top: 2rem; }
     .back a { color: var(--accent); text-decoration: none; }
     .back a:hover { text-decoration: underline; }
-    .info-box {
-      background: #1c2128; border: 1px solid var(--border); border-radius: 8px;
-      padding: 1rem; margin-bottom: 1rem; border-left: 3px solid var(--accent);
-    }
-    .info-box strong { color: var(--accent); }
-    .info-box.warn { border-left-color: #e3b341; }
-    .info-box.warn strong { color: #e3b341; }
     table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
     th, td { text-align: left; padding: 0.5rem; border-bottom: 1px solid var(--border); }
     th { color: var(--text-muted); font-weight: 600; }
   </style>
 </head>
 <body>
-  <h1>Navigation — Setup Guide</h1>
-  <p class="subtitle">net.zagart.navigation:core:1.0.0</p>
+  <h1>Navigation</h1>
+  <p class="subtitle">net.zagart.navigation — module: core</p>
 
-  <div class="info-box">
-    <strong>Published via:</strong> Maven Central &middot; No authentication required
-  </div>
+  <h2>Module</h2>
+  <table>
+    <tr><th>Module</th><th>Artifact</th><th>Targets</th></tr>
+    <tr><td><code>:core</code></td><td><code>net.zagart.navigation:core</code></td><td>Android, JVM, iOS</td></tr>
+  </table>
 
   <h2>Installation</h2>
-
-  <p>Maven Central is available by default — just add the dependency:</p>
-
   <pre><code>commonMain.dependencies {
     implementation("net.zagart.navigation:core:1.0.0")
 }</code></pre>
 
-  <h2>Quick Start</h2>
+  <h2>Basic Usage</h2>
   <pre><code><span class="token-comment">// Define a destination</span>
-<span class="token-keyword">data class</span> HomeScreen(<span class="token-keyword">override val</span> args: Args = Args())
-    : Destination
+<span class="token-keyword">data class</span> HomeScreen(<span class="token-keyword">override val</span> args: Args = Args()) : Destination
 
 <span class="token-comment">// Create controller</span>
 <span class="token-keyword">val</span> controller = <span class="token-func">rememberNavigationController</span>(
@@ -91,16 +82,14 @@
   <h2>Features</h2>
   <table>
     <tr><th>Feature</th><th>Details</th></tr>
-    <tr><td>Type-safe navigation</td><td>Destinations as classes implementing <code>Destination</code></td></tr>
-    <tr><td>Backstack management</td><td>Multiple independent backstacks (tabs/sections)</td></tr>
+    <tr><td>Type-safe navigation</td><td>Destinations as classes implementing <code>Destination</code> with <code>kotlinx-serialization</code></td></tr>
+    <tr><td>Backstack management</td><td>Multiple independent backstacks (tabs/sections) with state save/restore</td></tr>
     <tr><td>Animated transitions</td><td>Slide and None transitions with configurable duration</td></tr>
-    <tr><td>State persistence</td><td>Automatic save/restore via <code>kotlinx-serialization</code></td></tr>
     <tr><td>Predictive back gesture</td><td>Supported on Android</td></tr>
   </table>
 
   <h2>Versioning &amp; Releases</h2>
   <p>Follows <strong>Semantic Versioning</strong> with phases: <code>alpha</code>, <code>beta</code>, <code>rc</code>, stable.</p>
-  <p>To publish a new version to Maven Central:</p>
   <ol>
     <li>Update <code>version</code> in <code>core/build.gradle.kts</code></li>
     <li>Run <code>./gradlew :core:publish</code></li>
@@ -108,6 +97,6 @@
     <li>Tag and push: <code>git tag v1.0.0 && git push origin v1.0.0</code></li>
   </ol>
 
-  <div class="back"><a href="../">&larr; Back to all libraries</a></div>
+  <div class="back"><a href="../">&larr; Back</a></div>
 </body>
 </html>

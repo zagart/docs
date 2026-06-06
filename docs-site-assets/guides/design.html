@@ -12,7 +12,6 @@
       --text: #e6edf3;
       --text-muted: #8b949e;
       --accent: #58a6ff;
-      --accent-dim: #1f6feb;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -27,7 +26,7 @@
     h1 { font-size: 1.75rem; margin-bottom: 0.25rem; }
     h2 { font-size: 1.25rem; margin-top: 2rem; margin-bottom: 0.5rem; }
     h3 { font-size: 1.05rem; margin-top: 1.25rem; }
-    .subtitle { color: var(--text-muted); margin-bottom: 1.5rem; }
+    .subtitle { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem; }
     p { margin-bottom: 0.75rem; }
     pre {
       background: #1c2128; border: 1px solid var(--border); border-radius: 8px;
@@ -43,23 +42,14 @@
     .back { margin-top: 2rem; }
     .back a { color: var(--accent); text-decoration: none; }
     .back a:hover { text-decoration: underline; }
-    .info-box {
-      background: #1c2128; border: 1px solid var(--border); border-radius: 8px;
-      padding: 1rem; margin-bottom: 1rem; border-left: 3px solid var(--accent);
-    }
-    .info-box strong { color: var(--accent); }
     table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
     th, td { text-align: left; padding: 0.5rem; border-bottom: 1px solid var(--border); }
     th { color: var(--text-muted); font-weight: 600; }
   </style>
 </head>
 <body>
-  <h1>Design — Setup Guide</h1>
-  <p class="subtitle">net.zagart.design:{ui,builder}:1.6.5</p>
-
-  <div class="info-box">
-    <strong>Published via:</strong> Maven Central &middot; No authentication required
-  </div>
+  <h1>Design</h1>
+  <p class="subtitle">net.zagart.design — modules: ui, builder</p>
 
   <h2>Modules</h2>
   <table>
@@ -69,9 +59,6 @@
   </table>
 
   <h2>Installation</h2>
-
-  <p>Maven Central is available by default — just add the dependency:</p>
-
   <pre><code>commonMain.dependencies {
     implementation("net.zagart.design:ui:1.6.5")
     implementation("net.zagart.design:builder:1.6.5")
@@ -79,28 +66,23 @@
 
   <h2>Basic Usage</h2>
   <pre><code><span class="token-keyword">import</span> net.zagart.design.ui.DesignTheme
-
-<span class="token-func">DesignTheme</span> {
-    // Your Compose content
-}</code></pre>
-
-  <pre><code><span class="token-keyword">import</span> net.zagart.design.ui.components.Button
+<span class="token-keyword">import</span> net.zagart.design.ui.components.Button
 <span class="token-keyword">import</span> net.zagart.design.ui.components.listitem.ListItem
 
-<span class="token-func">Button</span>(<span class="token-string">"Click me"</span>, onClick = { /* ... */ })
-<span class="token-func">ListItem</span>(label = <span class="token-string">"Settings"</span>, onClick = { /* ... */ })</code></pre>
+<span class="token-func">DesignTheme</span> {
+    <span class="token-func">Button</span>(<span class="token-string">"Click me"</span>, onClick = { /* ... */ })
+    <span class="token-func">ListItem</span>(label = <span class="token-string">"Settings"</span>, onClick = { /* ... */ })
+}</code></pre>
 
-  <h2>Project Structure</h2>
+  <h2>Features</h2>
   <table>
     <tr><th>Module</th><th>Description</th></tr>
-    <tr><td><code>:ui</code></td><td>Core UI components (buttons, text fields, icons, lists, navigation bars, etc.) built with Compose Multiplatform + Material3</td></tr>
-    <tr><td><code>:builder</code></td><td>Declarative DSL for constructing screen states; enables backend-driven UI (BDUI) patterns</td></tr>
-    <tr><td><code>:composeApp</code></td><td>Shared Compose app (showcase)</td></tr>
+    <tr><td><code>:ui</code></td><td>Core UI components (buttons, text fields, icons, lists, navigation bars, etc.) built with Compose Multiplatform + Material3, 3 theme variants (Indigo, CyanDeep, OliveGold)</td></tr>
+    <tr><td><code>:builder</code></td><td>Declarative DSL for constructing screen states; enables backend-driven UI (BDUI) patterns with ScreenController and ScreenComponentViewData model</td></tr>
   </table>
 
   <h2>Versioning &amp; Releases</h2>
   <p>Follows <strong>Semantic Versioning</strong> with release phases: <code>alpha</code>, <code>beta</code>, <code>rc</code>, stable.</p>
-  <p>To publish a new version to Maven Central:</p>
   <ol>
     <li>Update <code>version</code> in <code>ui/build.gradle.kts</code> and <code>builder/build.gradle.kts</code></li>
     <li>Run <code>./gradlew :ui:publish :builder:publish</code></li>
@@ -108,6 +90,6 @@
     <li>Tag and push: <code>git tag v1.0.0 && git push origin v1.0.0</code></li>
   </ol>
 
-  <div class="back"><a href="../">&larr; Back to all libraries</a></div>
+  <div class="back"><a href="../">&larr; Back</a></div>
 </body>
 </html>

@@ -26,7 +26,7 @@
     h1 { font-size: 1.75rem; margin-bottom: 0.25rem; }
     h2 { font-size: 1.25rem; margin-top: 2rem; margin-bottom: 0.5rem; }
     h3 { font-size: 1.05rem; margin-top: 1.25rem; }
-    .subtitle { color: var(--text-muted); margin-bottom: 1.5rem; }
+    .subtitle { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem; }
     p { margin-bottom: 0.75rem; }
     pre {
       background: #1c2128; border: 1px solid var(--border); border-radius: 8px;
@@ -42,33 +42,27 @@
     .back { margin-top: 2rem; }
     .back a { color: var(--accent); text-decoration: none; }
     .back a:hover { text-decoration: underline; }
-    .info-box {
-      background: #1c2128; border: 1px solid var(--border); border-radius: 8px;
-      padding: 1rem; margin-bottom: 1rem; border-left: 3px solid #3fb950;
-    }
-    .info-box strong { color: #3fb950; }
     table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
     th, td { text-align: left; padding: 0.5rem; border-bottom: 1px solid var(--border); }
     th { color: var(--text-muted); font-weight: 600; }
   </style>
 </head>
 <body>
-  <h1>Keystone — Setup Guide</h1>
-  <p class="subtitle">net.zagart.keystone:core:X.Y.Z</p>
+  <h1>Keystone</h1>
+  <p class="subtitle">net.zagart.keystone — module: core</p>
 
-  <div class="info-box">
-    <strong>Published via:</strong> Maven Central &middot; No authentication required
-  </div>
+  <h2>Module</h2>
+  <table>
+    <tr><th>Module</th><th>Artifact</th><th>Targets</th></tr>
+    <tr><td><code>:core</code></td><td><code>net.zagart.keystone:core</code></td><td>Android, JVM, iOS</td></tr>
+  </table>
 
   <h2>Installation</h2>
-
-  <p>Add the dependency to your module's <code>build.gradle.kts</code> — Maven Central is already available by default in Gradle projects:</p>
-
   <pre><code>commonMain.dependencies {
     implementation("net.zagart.keystone:core:X.Y.Z")
 }</code></pre>
 
-  <h2>Quick Start</h2>
+  <h2>Basic Usage</h2>
   <pre><code><span class="token-keyword">val</span> storage = Keystone.Storage.<span class="token-func">create</span>(name = <span class="token-string">"my_app"</span>)
 
 <span class="token-comment">// Write</span>
@@ -78,7 +72,7 @@ storage.<span class="token-func">putBoolean</span>(<span class="token-string">"u
 <span class="token-comment">// Read</span>
 <span class="token-keyword">val</span> name = storage.<span class="token-func">getString</span>(<span class="token-string">"user"</span>, <span class="token-string">"name"</span>, default = <span class="token-string">"Guest"</span>)
 
-<span class="token-comment">// Observe</span>
+<span class="token-comment">// Observe changes</span>
 storage.<span class="token-func">observe</span>(<span class="token-string">"user"</span>) {
     string(<span class="token-string">"name"</span>)
     boolean(<span class="token-string">"notifications"</span>)
@@ -86,18 +80,15 @@ storage.<span class="token-func">observe</span>(<span class="token-string">"user
     <span class="token-func">updateUI</span>(snapshot)
 }</code></pre>
 
-  <h2>Entity Persistence</h2>
-  <pre><code><span class="token-keyword">@Entity</span>(type = <span class="token-string">"user_profile"</span>)
-<span class="token-keyword">data class</span> UserProfile(
-    <span class="token-keyword">@Key</span> <span class="token-keyword">val</span> id: String,
-    <span class="token-keyword">val</span> displayName: String,
-    <span class="token-keyword">@Embedded</span>(prefix = <span class="token-string">"prefs_"</span>)
-    <span class="token-keyword">val</span> preferences: UserPreferences
-)
-
-<span class="token-comment">// Save &amp; load</span>
-storage.<span class="token-func">putEntity</span>(profile)
-<span class="token-keyword">val</span> loaded = storage.<span class="token-func">getEntity</span>&lt;UserProfile&gt;(<span class="token-string">"user_123"</span>)</code></pre>
+  <h2>Features</h2>
+  <table>
+    <tr><th>Feature</th><th>Details</th></tr>
+    <tr><td>Scope-based storage</td><td>Organize data into named scopes (e.g. <code>"settings"</code>, <code>"user_profile"</code>)</td></tr>
+    <tr><td>Reactive observation</td><td>Observe changes via <code>Flow&lt;Snapshot&gt;</code> using the DSL builder</td></tr>
+    <tr><td>Entity persistence</td><td><code>@Entity</code>-annotated classes persisted via SQLDelight with <code>@Embedded</code> flattening</td></tr>
+    <tr><td>Type-safe keys</td><td>Define keys and defaults using <code>ObservationBuilder</code> DSL</td></tr>
+    <tr><td>Compose-agnostic</td><td>Pure Kotlin — no Compose dependency</td></tr>
+  </table>
 
   <h2>Platform Notes</h2>
   <table>
@@ -107,14 +98,15 @@ storage.<span class="token-func">putEntity</span>(profile)
     <tr><td>JVM</td><td><code>platformContext = null</code></td></tr>
   </table>
 
-  <h2>Publishing to Maven Central</h2>
-  <p>To publish a new version to Maven Central:</p>
+  <h2>Versioning &amp; Releases</h2>
+  <p>Follows <strong>Semantic Versioning</strong>.</p>
   <ol>
     <li>Update <code>version</code> in <code>core/build.gradle.kts</code></li>
-    <li>Run <code>./gradlew :core:publishAllPublicationsToMavenCentral</code></li>
+    <li>Run <code>./gradlew :core:publish</code></li>
+    <li>Release from the <a href="https://s01.oss.sonatype.org/">Sonatype staging UI</a></li>
     <li>Tag and push: <code>git tag vX.Y.Z && git push origin vX.Y.Z</code></li>
   </ol>
 
-  <div class="back"><a href="../">&larr; Back to all libraries</a></div>
+  <div class="back"><a href="../">&larr; Back</a></div>
 </body>
 </html>
