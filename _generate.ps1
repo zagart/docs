@@ -56,12 +56,13 @@ Get-ChildItem -LiteralPath $DocsSite -Recurse -Filter "*.html" | ForEach-Object 
     }
 }
 
-# Copy landing pages
+# Copy landing pages and guides
 $Assets = Join-Path $PSScriptRoot "docs-site-assets"
 if (Test-Path $Assets) {
     Copy-Item -LiteralPath "$Assets/index.html" -Destination (Join-Path $DocsSite "") -Force
-    Copy-Item -LiteralPath "$Assets/design/index.html" -Destination (Join-Path $DocsSite "design/") -Force
-    Write-Host "  Landing pages copied" -ForegroundColor Gray
+    Copy-Item -LiteralPath "$Assets/design" -Destination (Join-Path $DocsSite "design") -Recurse -Force
+    Copy-Item -LiteralPath "$Assets/guides" -Destination (Join-Path $DocsSite "guides") -Recurse -Force
+    Write-Host "  Landing pages and guides copied" -ForegroundColor Gray
 }
 
 Write-Host "`n=== Documentation assembled in docs-site/ ===" -ForegroundColor Cyan
