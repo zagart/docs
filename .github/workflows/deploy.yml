@@ -1,0 +1,94 @@
+name: Deploy API Docs
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [trigger-docs-build]
+  schedule:
+    - cron: '0 6 * * 0'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout design
+        uses: actions/checkout@v4
+        with:
+          repository: zagart/design
+          path: design
+
+      - name: Checkout keystone
+        uses: actions/checkout@v4
+        with:
+          repository: zagart/keystone
+          path: keystone
+
+      - name: Checkout navigation
+        uses: actions/checkout@v4
+        with:
+          repository: zagart/navigation
+          path: navigation
+
+      - name: Setup JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Setup Gradle cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/gradle-wrapper.properties', '**/libs.versions.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Grant execute permission
+        run: chmod +x design/gradlew keystone/gradlew navigation/gradlew
+
+      - name: Generate docs — design
+        run: |
+          cd design
+          ./gradlew :ui:dokkaGenerate :builder:dokkaGenerate --no-daemon
+
+      - name: Generate docs — keystone
+        run: |
+          cd keystone
+          ./gradlew :core:dokkaGenerate --no-daemon
+
+      - name: Generate docs — navigation
+        run: |
+          cd navigation
+          ./gradlew :core:dokkaGenerate --no-daemon
+
+      - name: Assemble docs-site
+        run: |
+          mkdir -p docs-site/design/ui docs-site/design/builder docs-site/keystone docs-site/navigation
+          cp -r design/ui/build/dokka/html/* docs-site/design/ui/
+          cp -r design/builder/build/dokka/html/* docs-site/design/builder/
+          cp -r keystone/core/build/dokka/html/* docs-site/keystone/
+          cp -r navigation/core/build/dokka/html/* docs-site/navigation/
+
+      - name: Copy landing pages
+        run: |
+          cp docs-site-assets/index.html docs-site/
+          cp docs-site-assets/design/index.html docs-site/design/
+
+      - name: Fix unresolved cross-module symbol references
+        run: |
+          find docs-site -name '*.html' -exec sed -i 's/ERROR CLASS: Symbol not found for \([A-Za-z]*\)/\1/g' {} +
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          command: pages deploy docs-site --project-name zagart-docs --branch main
+
+      - name: Notify on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            core.info('Docs deployment failed. Check the workflow logs for details.')

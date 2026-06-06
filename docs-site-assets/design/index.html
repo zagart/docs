@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design — API Documentation</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+    .subtitle { color: var(--text-muted); margin-bottom: 2.5rem; }
+    .grid { display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      width: 280px;
+      transition: border-color 0.2s, transform 0.2s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .card:hover { border-color: var(--accent); transform: translateY(-4px); }
+    .card h2 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+    .card p { color: var(--text-muted); font-size: 0.875rem; line-height: 1.5; }
+    .back { margin-top: 2rem; }
+    .back a { color: var(--accent); text-decoration: none; }
+    .back a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <h1>Design</h1>
+  <p class="subtitle">Kotlin Multiplatform design system &amp; UI builder library</p>
+  <div class="grid">
+    <a class="card" href="ui/">
+      <h2>UI</h2>
+      <p>Material3-based UI components, themes, icons, and design tokens.</p>
+    </a>
+    <a class="card" href="builder/">
+      <h2>Builder</h2>
+      <p>Declarative screen builder DSL and ScreenController for data-driven UIs.</p>
+    </a>
+  </div>
+  <div class="back"><a href="../">&larr; Back to all libraries</a></div>
+</body>
+</html>
