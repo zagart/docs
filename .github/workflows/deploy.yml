@@ -17,11 +17,11 @@ jobs:
           repository: zagart/design
           path: design
 
-      - name: Checkout keystone
+      - name: Checkout storage
         uses: actions/checkout@v4
         with:
-          repository: zagart/keystone
-          path: keystone
+          repository: zagart/storage
+          path: storage
 
       - name: Checkout navigation
         uses: actions/checkout@v4
@@ -46,16 +46,16 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Grant execute permission
-        run: chmod +x design/gradlew keystone/gradlew navigation/gradlew
+        run: chmod +x design/gradlew storage/gradlew navigation/gradlew
 
       - name: Generate docs — design
         run: |
           cd design
           ./gradlew :ui:dokkaGenerate :builder:dokkaGenerate --no-daemon
 
-      - name: Generate docs — keystone
+      - name: Generate docs — storage
         run: |
-          cd keystone
+          cd storage
           ./gradlew :core:dokkaGenerate --no-daemon
 
       - name: Generate docs — navigation
@@ -65,17 +65,17 @@ jobs:
 
       - name: Assemble docs-site
         run: |
-          mkdir -p docs-site/design/ui docs-site/design/builder docs-site/keystone docs-site/navigation
+          mkdir -p docs-site/design/ui docs-site/design/builder docs-site/storage docs-site/navigation
           cp -r design/ui/build/dokka/html/* docs-site/design/ui/
           cp -r design/builder/build/dokka/html/* docs-site/design/builder/
-          cp -r keystone/core/build/dokka/html/* docs-site/keystone/
+          cp -r storage/core/build/dokka/html/* docs-site/storage/
           cp -r navigation/core/build/dokka/html/* docs-site/navigation/
 
       - name: Copy landing pages, guides, and architecture
         run: |
           cp -r docs-site-assets/index.html docs-site/
           cp -r docs-site-assets/design docs-site/
-          cp -r docs-site-assets/guides docs-site/
+          cp -r docs-site-assets/integration docs-site/
           cp docs-site-assets/architecture.html docs-site/
 
       - name: Fix unresolved cross-module symbol references

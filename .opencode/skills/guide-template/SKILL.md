@@ -5,7 +5,7 @@ description: Use when creating or editing library setup guides in docs-site-asse
 
 # Guide Page Template
 
-Each library setup guide is a standalone HTML file in `docs-site-assets/guides/`. They all follow the same structure:
+Each library setup guide is a standalone HTML file in `docs-site-assets/integration/`. They all follow the same structure:
 
 ## Sections (in order)
 
@@ -34,7 +34,7 @@ Each guide hardcodes the library version in two places: the Installation snippet
 
 ## Adding a new guide
 
-1. Copy `keystone.html` (the simplest — single module)
+1. Copy `storage.html` (the simplest — single module)
 2. Update `<title>`, `<h1>`, subtitle, module table rows, artifact coordinates, usage snippet, feature table, and versioning steps
 3. Add a card link in `index.html`
 4. Regenerate and deploy via `_generate.ps1`

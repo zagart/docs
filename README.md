@@ -9,9 +9,9 @@ docs/
 ├── docs-site-assets/        # Source files (landing pages, setup guides) — edit these
 │   ├── index.html           # Library cards landing page
 │   ├── design/index.html    # Design library landing page
-│   └── guides/              # Per-library setup guides
+│   └── integration/         # Per-library setup guides
 │       ├── design.html
-│       ├── keystone.html
+│       ├── storage.html
 │       └── navigation.html
 ├── site/                    # Generated output (gitignored) — full assembled site
 ├── _generate.ps1            # Local generation script — runs dokka + assembles site/
@@ -22,11 +22,11 @@ docs/
 
 ### Setup guides (HTML)
 
-Edit files in `docs-site-assets/guides/`, then regenerate and deploy.
+Edit files in `docs-site-assets/integration/`, then regenerate and deploy.
 
 ### API docs (Dokka)
 
-API docs are generated from source code in each library repo (`design`, `keystone`, `navigation`). Update doc comments there, then run generation here.
+API docs are generated from source code in each library repo (`design`, `storage`, `navigation`). Update doc comments there, then run generation here.
 
 ## Local generation
 

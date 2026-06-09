@@ -6,7 +6,7 @@ $DocsSite = Join-Path $PSScriptRoot "site"
 
 $Projects = @(
     @{ Dir = "design";   Tasks = @(":ui:dokkaGenerate", ":builder:dokkaGenerate") }
-    @{ Dir = "keystone"; Tasks = @(":core:dokkaGenerate") }
+    @{ Dir = "storage"; Tasks = @(":core:dokkaGenerate") }
     @{ Dir = "navigation"; Tasks = @(":core:dokkaGenerate") }
 )
 
