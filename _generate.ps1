@@ -61,8 +61,8 @@ $Assets = Join-Path $PSScriptRoot "docs-site-assets"
 if (Test-Path $Assets) {
     Copy-Item -LiteralPath "$Assets/index.html" -Destination (Join-Path $DocsSite "index.html") -Force
     Copy-Item -LiteralPath "$Assets/design/index.html" -Destination (Join-Path $DocsSite "design/index.html") -Force
-    Get-ChildItem -LiteralPath "$Assets/guides" -File | ForEach-Object {
-        Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $DocsSite "guides/$($_.Name)") -Force
+    Get-ChildItem -LiteralPath "$Assets/integration" -File | ForEach-Object {
+        Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $DocsSite "integration/$($_.Name)") -Force
     }
     Write-Host "  Landing pages and guides copied" -ForegroundColor Gray
 }

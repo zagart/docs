@@ -109,6 +109,15 @@
   </p>
 
   <p>
+    Beyond reducing boilerplate, the builder DSL enforces consistent UX across every screen.
+    Padding, spacing, typography, and window-inset handling are baked into each component — a
+    <code>media()</code> or <code>title()</code> call produces the same visual result everywhere.
+    Loading and error states are also uniform, since they are rendered by
+    <code>ScreenComposable</code> from the sealed <code>ScreenState</code> rather than hand-crafted
+    per screen.
+  </p>
+
+  <p>
     See the <a href="../design/builder/builder/net.zagart.design.builder/">Builder API</a> for the
     full list of available content scope builders.
   </p>
