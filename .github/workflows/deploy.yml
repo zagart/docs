@@ -71,11 +71,12 @@ jobs:
           cp -r keystone/core/build/dokka/html/* docs-site/keystone/
           cp -r navigation/core/build/dokka/html/* docs-site/navigation/
 
-      - name: Copy landing pages and guides
+      - name: Copy landing pages, guides, and architecture
         run: |
           cp -r docs-site-assets/index.html docs-site/
           cp -r docs-site-assets/design docs-site/
           cp -r docs-site-assets/guides docs-site/
+          cp docs-site-assets/architecture.html docs-site/
 
       - name: Fix unresolved cross-module symbol references
         run: |
