@@ -15,18 +15,21 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: zagart/design
+          token: ${{ secrets.ZAGART_PAT }}
           path: design
 
       - name: Checkout storage
         uses: actions/checkout@v4
         with:
           repository: zagart/storage
+          token: ${{ secrets.ZAGART_PAT }}
           path: storage
 
       - name: Checkout navigation
         uses: actions/checkout@v4
         with:
           repository: zagart/navigation
+          token: ${{ secrets.ZAGART_PAT }}
           path: navigation
 
       - name: Setup JDK 21
