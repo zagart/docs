@@ -100,9 +100,9 @@ storage.<span class="token-func">observe</span>(<span class="token-string">"user
   <h2>Versioning &amp; Releases</h2>
   <ol>
     <li>Bump version in <code>core/build.gradle.kts</code></li>
-    <li>Run <code>./gradlew :core:publish</code></li>
-    <li>Release from the <a href="https://s01.oss.sonatype.org/">Sonatype staging UI</a></li>
+    <li>Run <code>./gradlew :core:publishAllPublicationsToLocalRepository</code></li>
     <li>Tag and push: <code>git tag v1.1.18 && git push origin v1.1.18</code></li>
+    <li>Maven Central deployment happens automatically via daily CI</li>
   </ol>
 
   <div class="back"><a href="../">&larr; Back</a></div>

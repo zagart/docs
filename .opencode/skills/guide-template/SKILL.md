@@ -14,7 +14,7 @@ Each library setup guide is a standalone HTML file in `docs-site-assets/integrat
 3. **Installation** — `<h2>Installation</h2>`, Gradle `commonMain.dependencies { ... }` snippet in a `<pre><code>`
 4. **Basic Usage** — `<h2>Basic Usage</h2>`, a compilable Kotlin snippet with `token-*` CSS span classes for syntax highlighting
 5. **Features** — `<h2>Features</h2>`, table with columns: `Feature`/`Module`, `Details`
-6. **Versioning & Releases** — `<h2>Versioning & Releases</h2>`, ordered list of release steps
+6. **Versioning & Releases** — `<h2>Versioning & Releases</h2>`, ordered list: bump version, local publish (`publishAllPublicationsToLocalRepository`), tag & push, then note "Maven Central deployment happens automatically via daily CI"
 7. **Back link** — `<div class="back"><a href="../">&larr; Back</a></div>`
 
 ## Styling

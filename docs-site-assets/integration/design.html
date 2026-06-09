@@ -62,8 +62,8 @@
 
   <h2>Installation</h2>
   <pre><code>commonMain.dependencies {
-    implementation(<span class="token-string">"net.zagart.design:ui:1.6.5"</span>)
-    implementation(<span class="token-string">"net.zagart.design:builder:1.6.5"</span>)
+    implementation(<span class="token-string">"net.zagart.design:ui:1.6.15"</span>)
+    implementation(<span class="token-string">"net.zagart.design:builder:1.6.15"</span>)
 }</code></pre>
 
   <h2>Quick Start</h2>
@@ -233,9 +233,9 @@ _state.value = error {
   <h2>Versioning &amp; Releases</h2>
   <ol>
     <li>Update <code>version</code> in <code>ui/build.gradle.kts</code> and <code>builder/build.gradle.kts</code></li>
-    <li>Run <code>./gradlew :ui:publish :builder:publish</code></li>
-    <li>Release from the <a href="https://s01.oss.sonatype.org/">Sonatype staging UI</a></li>
+    <li>Run <code>./gradlew :ui:publishAllPublicationsToLocalRepository :builder:publishAllPublicationsToLocalRepository</code></li>
     <li>Tag and push: <code>git tag v1.0.0 && git push origin v1.0.0</code></li>
+    <li>Maven Central deployment happens automatically via daily CI</li>
   </ol>
 
   <div class="back"><a href="../">&larr; Back</a></div>
