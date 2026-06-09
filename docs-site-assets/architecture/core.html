@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project Architecture — Zagart Libraries</title>
+  <title>Project Architecture</title>
   <style>
     :root {
       --bg: #0d1117;
@@ -26,6 +26,7 @@
     h1 { font-size: 1.75rem; margin-bottom: 0.25rem; }
     h2 { font-size: 1.25rem; margin-top: 2rem; margin-bottom: 0.5rem; }
     h3 { font-size: 1.05rem; margin-top: 1.25rem; }
+    h4 { font-size: 1rem; margin-top: 1.25rem; }
     .subtitle { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem; }
     p { margin-bottom: 0.75rem; }
     pre {
@@ -42,18 +43,37 @@
     .back { margin-top: 2rem; }
     .back a { color: var(--accent); text-decoration: none; }
     .back a:hover { text-decoration: underline; }
+    .mermaid { background: #1c2128; border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; overflow-x: auto; text-align: center; }
+    .mermaid svg { max-width: 100%; }
     table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
     th, td { text-align: left; padding: 0.5rem; border-bottom: 1px solid var(--border); }
     th { color: var(--text-muted); font-weight: 600; }
   </style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({
+  theme: 'dark',
+  themeVariables: {
+    background: '#1c2128',
+    primaryColor: '#161b22',
+    primaryTextColor: '#e6edf3',
+    primaryBorderColor: '#30363d',
+    secondaryColor: '#0d1117',
+    tertiaryColor: '#1c2128',
+    lineColor: '#58a6ff',
+    fontFamily: '"JetBrains Mono", "Fira Code", monospace',
+    fontSize: 14,
+    clusterBkg: '#0d1117',
+    clusterBorder: '#30363d',
+  },
+  flowchart: { useMaxWidth: true, padding: 12 }
+});</script>
 </head>
 <body>
-  <h1>Project Architecture</h1>
-  <p class="subtitle">Recommended architecture for Kotlin Multiplatform projects using Zagart libraries</p>
+  <h1>Core Project Architecture</h1>
+  <p class="subtitle">Kotlin Multiplatform project setup (Compose UI, Clean Architecture, MVI)</p>
 
   <p>
-    This document describes the architectural approach recommended for projects built on Zagart libraries,
-    covering Gradle module structure, Clean Architecture layers, naming conventions, and the MVI-based
+    Covers Gradle module structure, Clean Architecture layers, naming conventions, and the MVI-based
     presentation pattern.
   </p>
 
@@ -87,24 +107,141 @@
   </p>
 
   <ul>
-    <li><strong><code>:api</code></strong>: Public interfaces, navigation destinations, and models required by other features.</li>
-    <li><strong><code>:domain</code></strong>: Pure business logic, use cases, and repository interfaces. Depends only on <code>core:domain</code>.</li>
-    <li><strong><code>:data</code></strong>: Implementations of repository interfaces. Depends on <code>:domain</code> and technical services.</li>
-    <li><strong><code>:presentation</code></strong>: UI components (Compose) and ViewModels. Depends on <code>:domain</code>, <code>:api</code>, and <code>core:presentation</code>.</li>
+    <li><strong><code>:api</code></strong>: Navigation destinations for app-shell wiring. Not a cross-feature contract.</li>
+    <li><strong><code>:domain</code></strong>: Pure business logic, use cases, and repository interfaces. The <strong>sharable business capability layer</strong> — any feature may depend on another feature's <code>:domain</code> to reuse its behavior. Depends only on <code>core:domain</code>.</li>
+    <li><strong><code>:data</code></strong>: Repository implementations internal to the feature. Depends on its own <code>:domain</code> only for the repository interfaces it implements, plus <code>:service:*</code> modules for technical infrastructure.</li>
+    <li><strong><code>:presentation</code></strong>: UI components and ViewModels internal to the feature. Depends on its own <code>:domain</code> and <code>:api</code>, plus <code>core:presentation</code>.</li>
   </ul>
 
-  <h2>Dependency Rules</h2>
+  <h3>Layer Dependencies</h3>
+
+  <pre class="mermaid">
+flowchart LR
+    Data[":data"] --> Domain[":domain"]
+    Presentation[":presentation"] --> Domain
+    Presentation --> Api[":api"]
+</pre>
+
+  <h3>Feature Dependencies</h3>
 
   <p>The following diagram illustrates the typical dependency flow:</p>
 
-  <pre><code>graph TD
-    Presentation[":presentation"] --> Domain[":domain"]
-    Presentation --> API[":api"]
-    Presentation --> CorePres[":core:presentation"]
-    Presentation --> CoreNav[":core:navigation"]
-    Data[":data"] --> Domain
-    Data --> Service[":service:*"]
-    Domain --> CoreDomain[":core:domain"]</code></pre>
+  <pre class="mermaid">
+flowchart TB
+    subgraph Presentation["Presentation Layer"]
+        direction LR
+        P[":feature:&lt;name&gt;:presentation"] --> A[":api"]
+        P --> CP[":core:presentation"]
+        P --> CN[":core:navigation"]
+    end
+    subgraph Domain["Domain Layer"]
+        direction LR
+        Dom[":feature:&lt;name&gt;:domain"] --> CD[":core:domain"]
+    end
+    subgraph Data["Data Layer"]
+        direction LR
+        D[":feature:&lt;name&gt;:data"] --> S[":service:*"]
+    end
+
+    P --- Dom
+    Dom --- D
+</pre>
+
+  <h3>Cross-Feature Dependencies</h3>
+
+  <p>
+    Features may depend on each other in specific, architecturally valid ways.
+    The patterns differ based on whether only domain logic is reused, or
+    presentation models are reused as well.
+  </p>
+
+  <p><strong>Domain reuse only</strong> — the consumer has no <code>:domain</code> of its own:</p>
+
+  <pre class="mermaid">
+%%{init: {'flowchart': {'curve': 'linear'}}}%%
+flowchart LR
+    subgraph Source["feature:source"]
+        direction TB
+        SDOM[":domain"]
+        SDATA[":data"]
+        SPRES["(:presentation)"]
+        SAPI[":api"]
+        SDOM --- SDATA
+        SDOM --- SPRES
+    end
+    subgraph Consumer["feature:consumer"]
+        direction TB
+        CPRES[":presentation"]
+    end
+
+    CPRES --> SDOM
+    CPRES --> SAPI
+</pre>
+
+  <p><strong>Domain and presentation reuse</strong> — the consumer has both
+  <code>:domain</code> (depending on source's domain) and <code>:presentation</code>
+  (reusing source presentation models):</p>
+
+  <pre class="mermaid">
+%%{init: {'flowchart': {'curve': 'linear'}}}%%
+flowchart LR
+    subgraph Source["feature:source"]
+        direction TB
+        SDOM[":domain"]
+        SDATA[":data"]
+        SPRES["(:presentation)"]
+        SAPI[":api"]
+        SDOM --- SDATA
+        SDOM --- SPRES
+    end
+    subgraph Consumer["feature:consumer"]
+        direction TB
+        CPRES[":presentation"]
+        CDOM[":domain"]
+        CDOM --- CPRES
+    end
+
+    CDOM --> SDOM
+    CPRES --> SDOM
+    CPRES --> SAPI
+    CPRES -.-> SPRES
+</pre>
+
+  <table>
+    <tr><th>Consumer → Source</th><th>Allowed</th><th>Rationale</th></tr>
+    <tr>
+      <td><code>:domain</code> → <code>:domain</code></td><td>✅</td>
+      <td>Inner→inner. One bounded context reuses another's business capability.</td>
+    </tr>
+    <tr>
+      <td><code>:presentation</code> → <code>:domain</code></td><td>✅</td>
+      <td>Outer→inner. Saves boilerplate wrappers — API changes propagate regardless.</td>
+    </tr>
+    <tr>
+      <td><code>:presentation</code> → <code>:presentation</code></td><td>✅</td>
+      <td>Pragmatic model/mapping reuse over duplication or polluting <code>core:</code>.</td>
+    </tr>
+    <tr>
+      <td><code>:presentation</code> → <code>:api</code></td><td>✅</td>
+      <td>Navigation destination access for the consumer's UI layer.</td>
+    </tr>
+    <tr>
+      <td><code>:data</code> → <code>:domain</code></td><td>❌</td>
+      <td>Data implements its own feature's repository contracts only. Cross-feature orchestration belongs in <code>:domain</code>.</td>
+    </tr>
+    <tr>
+      <td>Any → <code>:data</code></td><td>❌</td>
+      <td>Data is an internal implementation layer.</td>
+    </tr>
+    <tr>
+      <td><code>:domain</code> → <code>:api</code></td><td>❌</td>
+      <td><code>:api</code> is for navigation destinations consumed by the presentation layer, not domain logic.</td>
+    </tr>
+    <tr>
+      <td><code>:domain</code> → <code>:presentation</code></td><td>❌</td>
+      <td>Domain is pure business logic and must not depend on volatile UI modules.</td>
+    </tr>
+  </table>
 
   <h2>Convention Plugins</h2>
 
@@ -185,28 +322,26 @@
     <li><strong>Unidirectional Data Flow</strong>: ViewModels expose a single stream of state (usually <code>StateFlow</code>) to the UI.</li>
   </ul>
 
-  <h3>Zagart Design System</h3>
-
-  <p>
-    Most screens can leverage the <strong>zagart-design</strong> library for state construction and UI rendering.
-  </p>
-
-  <ul>
-    <li><strong>ScreenState</strong>: Used as the primary state model for most screens.</li>
-    <li><strong>ScreenBuilder</strong>: ViewModels inheriting from <code>ScreenBuilderViewModel</code> use DSL-like builders (e.g., <code>screen { ... }</code>, <code>loading { ... }</code>) to construct the <code>ScreenState</code>.</li>
-  </ul>
-
   <h3>Stateless UI and Event Handling</h3>
 
   <p>
-    For screens not using the Zagart Design System, separate state management from UI rendering to promote stateless UI components and improve testability.
+    Separate state management from UI rendering to promote stateless UI components and improve testability.
   </p>
 
   <ul>
     <li><strong><code>&lt;Name&gt;Screen</code></strong>: A stateful root-level composable that collects the UI state and maps events to the ViewModel.</li>
     <li><strong><code>&lt;Name&gt;ScreenUi</code></strong>: A stateless composable that receives the state and an events data class, focusing solely on rendering.</li>
-    <li><strong><code>&lt;Name&gt;ScreenEvents</code></strong>: A data class that encapsulates all UI-to-ViewModel interactions.</li>
+    <li><strong><code>&lt;Name&gt;ScreenEvents</code></strong>: A data class that encapsulates all UI-to-ViewModel interactions, scoping every callback into a single type and avoiding the callback hell that arises when a Composable accumulates dozens of lambda parameters.</li>
   </ul>
+
+  <h4>Event Types</h4>
+
+  <ul>
+    <li><strong>Fire-and-forget</strong> — return <code>Unit</code>, processed asynchronously by the ViewModel. Examples: <code>onBack: () -> Unit</code>, <code>onNextClick: () -> Unit</code>.</li>
+    <li><strong>Transformer</strong> — return a value for immediate UI use. Must not read ViewModel state (including cached fields). Examples: <code>onSearchQueryChange: (query: String) -> String</code>.</li>
+  </ul>
+
+  <p><strong>Caveat:</strong> Transformer events are an opt-in escape hatch for high-frequency UI transforms (keystroke formatting, character filtering). They are not a replacement for UDF — if the ViewModel needs the transformed value for business logic, the raw input must also arrive via a separate fire-and-forget event that updates screen state.</p>
 
   <h4>Example</h4>
 
@@ -214,6 +349,7 @@
     <span class="token-keyword">val</span> onBack: () <span class="token-keyword">-&gt;</span> Unit,
     <span class="token-keyword">val</span> onNextClick: () <span class="token-keyword">-&gt;</span> Unit,
     <span class="token-keyword">val</span> onPrevious: () <span class="token-keyword">-&gt;</span> Unit,
+    <span class="token-keyword">val</span> onSearchQueryChange: (query: String) <span class="token-keyword">-&gt;</span> String,
 )
 
 <span class="token-func">@Composable</span>
@@ -227,6 +363,7 @@
             onBack = viewModel::onBack,
             onNextClick = viewModel::onNext,
             onPrevious = viewModel::onPrevious,
+            onSearchQueryChange = viewModel::formatSearchQuery,
         )
     }
 
@@ -245,7 +382,7 @@
   <h2>Navigation Pattern</h2>
 
   <p>
-    Use a typed navigation system where each screen is associated with a specific <code>AppDestination</code> (from the <code>zagart-navigation</code> library).
+    Use a typed navigation system where each screen is associated with a specific destination type.
   </p>
 
   <h3>Screen Entry Point</h3>
@@ -268,14 +405,14 @@
 <span class="token-keyword">class</span> <span class="token-func">FeatureScreenViewModel</span>(
     <span class="token-func">@InjectedParam</span> <span class="token-keyword">private val</span> destination: FeatureDestination,
     <span class="token-func">@Provided</span> <span class="token-keyword">private val</span> getDetailsUseCase: GetFeatureDetailsUseCase,
-) : <span class="token-func">ScreenBuilderViewModel</span>() {
+) {
     <span class="token-comment">// ... use destination.itemId</span>
 }</code></pre>
 
   <h3>Outgoing Navigation</h3>
 
   <p>
-    ViewModels inheriting from <code>ScreenBuilderViewModel</code> use the <code>navigate(destination)</code> function to trigger navigation to other screens.
+    ViewModels can use a navigation function to trigger navigation to other screens via the destination type.
   </p>
 
   <h2>Use Cases</h2>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UI — Setup Guide</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 2rem;
+      max-width: 860px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+    h1 { font-size: 1.75rem; margin-bottom: 0.25rem; }
+    h2 { font-size: 1.25rem; margin-top: 2rem; margin-bottom: 0.5rem; }
+    h3 { font-size: 1.05rem; margin-top: 1.25rem; }
+    .subtitle { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem; }
+    p { margin-bottom: 0.75rem; }
+    pre {
+      background: #1c2128; border: 1px solid var(--border); border-radius: 8px;
+      padding: 1rem; overflow-x: auto; margin-bottom: 1rem;
+    }
+    code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.875rem; color: #f0f6fc; }
+    pre code { color: inherit; }
+    .token-comment { color: #8b949e; }
+    .token-keyword { color: #ff7b72; }
+    .token-string { color: #a5d6ff; }
+    .token-func { color: #d2a8ff; }
+    a { color: var(--accent); }
+    .back { margin-top: 2rem; }
+    .back a { color: var(--accent); text-decoration: none; }
+    .back a:hover { text-decoration: underline; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+    th, td { text-align: left; padding: 0.5rem; border-bottom: 1px solid var(--border); }
+    th { color: var(--text-muted); font-weight: 600; }
+    ul { margin-bottom: 1rem; padding-left: 1.25rem; }
+    li { margin-bottom: 0.25rem; }
+  </style>
+</head>
+<body>
+  <h1>UI</h1>
+  <p class="subtitle">net.zagart.design:ui — Compose Multiplatform UI components, themes, and design tokens</p>
+
+  <h2>Module</h2>
+  <table>
+    <tr><th>Module</th><th>Artifact</th><th>Targets</th></tr>
+    <tr><td><code>:ui</code></td><td><code>net.zagart.design:ui</code></td><td>Android, iOS, Desktop</td></tr>
+  </table>
+
+  <h2>Installation</h2>
+  <pre><code>commonMain.dependencies {
+    implementation(<span class="token-string">"net.zagart.design:ui:1.6.5"</span>)
+}</code></pre>
+
+  <h2>Basic Usage</h2>
+  <pre><code><span class="token-keyword">import</span> net.zagart.design.ui.DesignTheme
+<span class="token-keyword">import</span> net.zagart.design.ui.Settings
+<span class="token-keyword">import</span> net.zagart.design.ui.theme.Theme
+<span class="token-keyword">import</span> net.zagart.design.ui.components.*
+<span class="token-keyword">import</span> net.zagart.design.ui.components.button.Button
+<span class="token-keyword">import</span> net.zagart.design.ui.components.listitem.ListItem
+<span class="token-keyword">import</span> net.zagart.design.ui.components.listitem.SwitchListItem
+
+<span class="token-keyword">val</span> settings = Settings(
+    isDark = true,
+    animateTransitions = true,
+    theme = Theme.Indigo
+)
+
+<span class="token-func">DesignTheme</span>(settings = settings) {
+    Column {
+        <span class="token-func">TopAppBar</span>(title = <span class="token-string">"Settings"</span>)
+        <span class="token-func">TextField</span>(value = text, onValueChange = { text = it }, label = <span class="token-string">"Name"</span>)
+        <span class="token-func">ListItem</span>(label = <span class="token-string">"Notifications"</span>, onClick = { })
+        <span class="token-func">SwitchListItem</span>(label = <span class="token-string">"Dark mode"</span>, checked = isDark, onCheckedChange = { isDark = it })
+        <span class="token-func">Button</span>(<span class="token-string">"Save"</span>, onClick = { })
+    }
+}</code></pre>
+
+  <h2>Features</h2>
+  <table>
+    <tr><th>Feature</th><th>Details</th></tr>
+    <tr><td>Theme system</td><td><code>DesignTheme</code> wrapping Material3 with 3 color schemes (Indigo, CyanDeep, OliveGold), runtime <code>Settings</code> (dark mode, animations, nav bar type), and <code>LocalScreenConfiguration</code></td></tr>
+    <tr><td>Design tokens</td><td>Spacing scale (<code>spacings.x1</code>–<code>x16</code>, base 4dp), dimensions (<code>dimens.iconSize</code>), Material3 color roles, typography, and shapes</td></tr>
+    <tr><td>Navigation components</td><td><code>TopAppBar</code>, <code>NavigationBar</code> (adaptive bottom/side rail), <code>FloatingNavigationBar</code> (pill-shaped)</td></tr>
+    <tr><td>Input &amp; selection</td><td><code>TextField</code>, <code>SearchBar</code>, <code>MoneyInput</code>, <code>SmartStringField</code>, <code>SegmentedButtonRow</code>, <code>Chip</code>, <code>RichChip</code></td></tr>
+    <tr><td>List &amp; media</td><td><code>ListItem</code> (with RadioButton/Switch variants), <code>MediaListCard</code>, <code>MediaTile</code>, <code>Selector</code>, <code>VerticalList</code></td></tr>
+    <tr><td>Visual &amp; layout</td><td><code>AsyncImage</code> (Coil with shimmer), <code>Gradient</code>, <code>LiveBorderBox</code>, <code>ProgressBar</code>, <code>AdaptiveLayout</code>, <code>Filler</code>, <code>BackHandler</code></td></tr>
+    <tr><td>Icon system</td><td>199 named <code>Icon</code> enum values with stable <code>id</code> strings; composable resolves to Material <code>ImageVector</code> (filled/outlined)</td></tr>
+    <tr><td>Extensions &amp; utilities</td><td>Composable spacers, <code>String.parseBold()</code> for AnnotatedString, <code>WindowInsets</code> helpers, <code>CornerBasedShape</code> clipping, <code>SystemBarsSetup</code> / <code>ImmersiveModeSetup</code></td></tr>
+  </table>
+
+  <h2>Versioning &amp; Releases</h2>
+  <ol>
+    <li>Update <code>version</code> in <code>ui/build.gradle.kts</code></li>
+    <li>Run <code>./gradlew :ui:publish</code></li>
+    <li>Release from the <a href="https://s01.oss.sonatype.org/">Sonatype staging UI</a></li>
+    <li>Tag and push: <code>git tag v1.0.0 && git push origin v1.0.0</code></li>
+  </ol>
+
+  <div class="back"><a href="../">&larr; Back to all libraries</a></div>
+</body>
+</html>

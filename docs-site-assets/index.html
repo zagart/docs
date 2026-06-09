@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Zagart Libraries — API Documentation</title>
+  <title>Libraries — API Documentation</title>
   <style>
     :root {
       --bg: #0d1117;
@@ -19,30 +19,33 @@
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
       padding: 2rem;
     }
-    h1 { font-size: 2rem; margin-bottom: 0.5rem; }
-    .subtitle { color: var(--text-muted); margin-bottom: 2.5rem; font-size: 1rem; }
+    .main-content {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    h1 { font-size: 2rem; margin: 2.5rem 0 0.5rem; }
+    h1:first-child { margin-top: 0; }
+    .subtitle { color: var(--text-muted); margin-bottom: 2rem; font-size: 1rem; }
     .grid {
       display: flex;
       flex-wrap: wrap;
       gap: 1.5rem;
-      justify-content: center;
-      max-width: 900px;
+    }
+    .grid:not(.grid-libraries) .card { width: 280px; }
+    .grid-libraries {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
     }
     .card {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 1.5rem 2rem;
-      width: 260px;
       transition: border-color 0.2s, transform 0.2s;
-      text-decoration: none;
+      border-color: inherit;
       color: inherit;
       display: flex;
       flex-direction: column;
@@ -52,37 +55,79 @@
       transform: translateY(-4px);
     }
     .card h2 { font-size: 1.25rem; margin-bottom: 0.5rem; }
-    .card p { color: var(--text-muted); font-size: 0.875rem; line-height: 1.5; flex: 1; }
-    .card .meta { margin-top: 1rem; font-size: 0.8rem; color: var(--accent); }
-    .nav-links { margin-top: 2rem; display: flex; gap: 1.5rem; }
-    .nav-links a { color: var(--accent); text-decoration: none; font-size: 0.9rem; }
-    .nav-links a:hover { text-decoration: underline; }
+    .card p { color: var(--text-muted); font-size: 0.875rem; line-height: 1.5; flex: 1; margin-bottom: 1rem; }
+    .card-links { display: flex; gap: 1rem; }
+    .card-links a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.85rem;
+      padding: 0.35rem 0.75rem;
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+    .card-links a:hover { background: var(--accent); color: #0d1117; }
+    a.card.linked { text-decoration: none; }
+    a.card.linked p { margin-bottom: 0; }
+    .back { margin-top: 2rem; }
+    .back a { color: var(--accent); text-decoration: none; }
+    .back a:hover { text-decoration: underline; }
     footer { margin-top: 3rem; color: var(--text-muted); font-size: 0.8rem; }
   </style>
 </head>
 <body>
-  <h1>Zagart Libraries</h1>
-  <p class="subtitle">API documentation for the library collection</p>
-  <div class="grid">
-    <a class="card" href="design/">
-      <h2>Design</h2>
-      <p>Multiplatform design system &amp; UI builder library for Compose — Material3 components, themes, and declarative screen DSL.</p>
-      <span class="meta">net.zagart.design</span>
-    </a>
-    <a class="card" href="keystone/">
-      <h2>Keystone</h2>
-      <p>Scope-based persistent key-value &amp; entity storage backed by SQLDelight, with reactive observation via coroutines Flow.</p>
-      <span class="meta">net.zagart.keystone</span>
-    </a>
-    <a class="card" href="navigation/">
-      <h2>Navigation</h2>
-      <p>Type-safe, serializable multiplatform navigation for Compose with animated transitions, backstack management, and state restoration.</p>
-      <span class="meta">net.zagart.navigation</span>
-    </a>
+  <div class="main-content">
+    <h1>Guides</h1>
+    <p class="subtitle">Project architecture, setup, and conventions</p>
+    <div class="grid">
+      <div class="card">
+        <h2>Architecture</h2>
+        <p>KMP project setup with Clean Architecture, MVI, and modularization conventions</p>
+        <div class="card-links">
+          <a href="architecture/core.html">Core</a>
+          <a href="architecture/assisted.html">Assisted</a>
+        </div>
+      </div>
+    </div>
+
+    <h1>Libraries</h1>
+    <p class="subtitle">API documentation for the library collection</p>
+
+    <div class="grid grid-libraries">
+      <div class="card">
+        <h2>Design — Builder</h2>
+        <p>Declarative screen builder DSL, ScreenController, and BDUI framework</p>
+        <div class="card-links">
+          <a href="design/builder/builder/net.zagart.design.builder/">API</a>
+          <a href="guides/builder">Guide</a>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Design — UI</h2>
+        <p>Compose Multiplatform UI components, themes, icons, and design tokens</p>
+        <div class="card-links">
+          <a href="design/ui/ui/net.zagart.design.ui/">API</a>
+          <a href="guides/ui">Guide</a>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Keystone</h2>
+        <p>Scope-based persistent key-value &amp; entity storage with reactive observation</p>
+        <div class="card-links">
+          <a href="keystone/">API</a>
+          <a href="guides/keystone.html">Guide</a>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Navigation</h2>
+        <p>Type-safe, serializable multiplatform navigation with animated transitions</p>
+        <div class="card-links">
+          <a href="navigation/">API</a>
+          <a href="guides/navigation.html">Guide</a>
+        </div>
+      </div>
+    </div>
+    <footer>Generated with Dokka &middot; Deployed on Cloudflare Pages</footer>
   </div>
-  <div class="nav-links">
-    <a href="guides/">&#8594; Setup Guides</a>
-  </div>
-  <footer>Generated with Dokka &middot; Deployed on Cloudflare Pages</footer>
 </body>
 </html>

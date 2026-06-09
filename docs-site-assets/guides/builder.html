@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Builder — Setup Guide</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 2rem;
+      max-width: 860px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+    h1 { font-size: 1.75rem; margin-bottom: 0.25rem; }
+    h2 { font-size: 1.25rem; margin-top: 2rem; margin-bottom: 0.5rem; }
+    h3 { font-size: 1.05rem; margin-top: 1.25rem; }
+    .subtitle { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem; }
+    p { margin-bottom: 0.75rem; }
+    pre {
+      background: #1c2128; border: 1px solid var(--border); border-radius: 8px;
+      padding: 1rem; overflow-x: auto; margin-bottom: 1rem;
+    }
+    code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.875rem; color: #f0f6fc; }
+    pre code { color: inherit; }
+    .token-comment { color: #8b949e; }
+    .token-keyword { color: #ff7b72; }
+    .token-string { color: #a5d6ff; }
+    .token-func { color: #d2a8ff; }
+    a { color: var(--accent); }
+    .back { margin-top: 2rem; }
+    .back a { color: var(--accent); text-decoration: none; }
+    .back a:hover { text-decoration: underline; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+    th, td { text-align: left; padding: 0.5rem; border-bottom: 1px solid var(--border); }
+    th { color: var(--text-muted); font-weight: 600; }
+    ul { margin-bottom: 1rem; padding-left: 1.25rem; }
+    li { margin-bottom: 0.25rem; }
+  </style>
+</head>
+<body>
+  <h1>Builder</h1>
+  <p class="subtitle">net.zagart.design:builder — Declarative screen builder DSL and BDUI framework</p>
+
+  <h2>Module</h2>
+  <table>
+    <tr><th>Module</th><th>Artifact</th><th>Targets</th></tr>
+    <tr><td><code>:builder</code></td><td><code>net.zagart.design:builder</code></td><td>Android, JVM, iOS</td></tr>
+  </table>
+
+  <h2>Installation</h2>
+  <pre><code>commonMain.dependencies {
+    implementation(<span class="token-string">"net.zagart.design:builder:1.6.5"</span>)
+}</code></pre>
+
+  <h2>Basic Usage</h2>
+  <pre><code><span class="token-keyword">class</span> MyController : ScreenController {
+
+    <span class="token-keyword">private val</span> _state = MutableStateFlow(buildInitialState())
+    <span class="token-keyword">override val</span> state: StateFlow&lt;ScreenState&gt; = _state
+    <span class="token-keyword">override val</span> isNavigationBarVisible = MutableStateFlow(true)
+
+    <span class="token-keyword">private fun </span><span class="token-func">buildInitialState</span>(): ScreenState = screen {
+        header { title(<span class="token-string">"My Screen"</span>); search() }
+        section { item(<span class="token-string">"opt_a"</span>, <span class="token-string">"Option A"</span>); toggle(<span class="token-string">"feature_x"</span>, <span class="token-string">"Enable X"</span>) }
+        lane { media(<span class="token-string">"m1"</span>, <span class="token-string">"Item 1"</span>); media(<span class="token-string">"m2"</span>, <span class="token-string">"Item 2"</span>) }
+        choice { option(<span class="token-string">"sort_date"</span>, <span class="token-string">"Sort by date"</span>); option(<span class="token-string">"sort_name"</span>, <span class="token-string">"Sort by name"</span>) }
+        filter { option(<span class="token-string">"cat_a"</span>, <span class="token-string">"Cat A"</span>); option(<span class="token-string">"cat_b"</span>, <span class="token-string">"Cat B"</span>) }
+    }
+
+    <span class="token-keyword">override fun </span><span class="token-func">onClick</span>(id: String) { <span class="token-comment">/* handle click */</span> }
+    <span class="token-keyword">override fun </span><span class="token-func">onSearch</span>(query: String) { <span class="token-comment">/* filter results */</span> }
+    <span class="token-keyword">override fun </span><span class="token-func">onRefresh</span>() { _state.value = loading { message(<span class="token-string">"Refreshing..."</span>) } }
+    <span class="token-keyword">override fun </span><span class="token-func">onBack</span>() { }
+    <span class="token-keyword">override fun </span><span class="token-func">onLoadMore</span>() { }
+    <span class="token-keyword">override fun </span><span class="token-func">onResume</span>() { }
+    <span class="token-keyword">override fun </span><span class="token-func">isChecked</span>(id: String) = false
+    <span class="token-keyword">override fun </span><span class="token-func">isSelected</span>(id: String) = false
+    <span class="token-keyword">override fun </span><span class="token-func">isFiltered</span>(id: String) = false
+    <span class="token-keyword">override fun </span><span class="token-func">filter</span>(filterId: String, optionId: String) { }
+    <span class="token-keyword">override fun </span><span class="token-func">map</span>(itemId: String) { }
+    <span class="token-keyword">override fun </span><span class="token-func">registerLazyLoader</span>(componentId: String, loader: () -> Unit) { }
+}</code></pre>
+  <p>Render with <code>ScreenComposable</code> inside <code>DesignTheme</code>:</p>
+  <pre><code><span class="token-func">DesignTheme</span>(settings) {
+    <span class="token-func">ScreenComposable</span>(controller = myController)
+}</code></pre>
+  <p>For stateless usage with explicit callbacks, use <code>ScreenComposableUi</code>.</p>
+
+  <h2>Features</h2>
+  <table>
+    <tr><th>Feature</th><th>Details</th></tr>
+    <tr><td>ScreenController pattern</td><td>Separates UI rendering from state management via the <code>ScreenController</code> interface; controller owns <code>StateFlow&lt;ScreenState&gt;</code></td></tr>
+    <tr><td>Declarative DSL</td><td>Build <code>ScreenState.Content</code> with <code>screen { ... }</code> including header, section, lane, choice, filter, text, title, media components</td></tr>
+    <tr><td>State management</td><td>Immutable state with three sealed variants: <code>Content</code>, <code>Loading</code> (optional message), <code>Error</code> (message + retry)</td></tr>
+    <tr><td>BDUI support</td><td>Backend-driven UI via <code>LazyComponent</code> with on-demand loading through <code>registerLazyLoader</code></td></tr>
+    <tr><td>Preview support</td><td><code>PreviewScreenComposable</code> allows defining screen content inline for IDE previews</td></tr>
+  </table>
+
+  <h2>Versioning &amp; Releases</h2>
+  <ol>
+    <li>Update <code>version</code> in <code>builder/build.gradle.kts</code></li>
+    <li>Run <code>./gradlew :builder:publish</code></li>
+    <li>Release from the <a href="https://s01.oss.sonatype.org/">Sonatype staging UI</a></li>
+    <li>Tag and push: <code>git tag v1.0.0 && git push origin v1.0.0</code></li>
+  </ol>
+
+  <div class="back"><a href="../">&larr; Back to all libraries</a></div>
+</body>
+</html>

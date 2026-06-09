@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Architecture — Assisted</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 2rem;
+      max-width: 860px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+    h1 { font-size: 1.75rem; margin-bottom: 0.25rem; }
+    h2 { font-size: 1.25rem; margin-top: 2rem; margin-bottom: 0.5rem; }
+    h3 { font-size: 1.05rem; margin-top: 1.25rem; }
+    .subtitle { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem; }
+    p { margin-bottom: 0.75rem; }
+    pre {
+      background: #1c2128; border: 1px solid var(--border); border-radius: 8px;
+      padding: 1rem; overflow-x: auto; margin-bottom: 1rem;
+    }
+    code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.875rem; color: #f0f6fc; }
+    pre code { color: inherit; }
+    .token-comment { color: #8b949e; }
+    .token-keyword { color: #ff7b72; }
+    .token-string { color: #a5d6ff; }
+    .token-func { color: #d2a8ff; }
+    a { color: var(--accent); }
+    .back { margin-top: 2rem; }
+    .back a { color: var(--accent); text-decoration: none; }
+    .back a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <h1>Assisted Project Architecture</h1>
+  <p class="subtitle">Using design and navigation libraries to implement Clean Architecture and MVI patterns</p>
+
+  <p>
+    The <a href="core.html">core architecture</a> defines the project structure, layers, and conventions.
+    The design and navigation libraries provide concrete implementations for the presentation layer, reducing
+    boilerplate and enforcing architectural rules at the code level.
+  </p>
+
+  <h2>Design System</h2>
+
+  <p>
+    The <strong>design</strong> library provides the building blocks for the MVI presentation layer:
+    <code>ScreenState</code>, <code>ScreenController</code>, and the state builder DSL functions
+    (<code>screen</code>, <code>loading</code>, <code>error</code>).
+  </p>
+
+  <h3>ScreenState</h3>
+
+  <p>
+    <code>ScreenState</code> is the primary state model used across most screens. It encapsulates all UI-relevant
+    state and is constructed using a DSL-like builder pattern.
+  </p>
+
+  <h3>ScreenBuilderViewModel</h3>
+
+  <p>
+    <code>ScreenBuilderViewModel</code> is a convenience base class in the project's
+    <code>core:presentation</code> module. It implements <code>ScreenController</code> from
+    design and provides navigation support. ViewModels inherit from it and use the builder
+    DSL functions to construct <code>ScreenState</code>:
+  </p>
+
+  <pre><code><span class="token-func">@KoinViewModel</span>
+<span class="token-keyword">class</span> <span class="token-func">FeatureScreenViewModel</span>(
+    <span class="token-func">@InjectedParam</span> <span class="token-keyword">private val</span> destination: FeatureDestination,
+    <span class="token-func">@Provided</span> <span class="token-keyword">private val</span> getDetailsUseCase: GetFeatureDetailsUseCase,
+) : <span class="token-func">ScreenBuilderViewModel</span>() {
+
+    <span class="token-keyword">override val</span> state: StateFlow&lt;ScreenState&gt; = _state
+
+    <span class="token-keyword">private val</span> _state = MutableStateFlow&lt;ScreenState&gt;(
+        <span class="token-func">loading</span> { <span class="token-func">message</span>(TextViewData.Res(Res.string.generic_loading)) }
+    )
+
+    <span class="token-keyword">init</span> {
+        viewModelScope.<span class="token-func">launch</span> {
+            <span class="token-keyword">val</span> result = getDetailsUseCase()
+            _state.value = <span class="token-func">screen</span>(header = <span class="token-func">header</span>(showBackButton = true)) {
+                <span class="token-func">title</span>(TextViewData.Raw(result.title))
+                <span class="token-func">text</span>(TextViewData.Raw(result.description ?: ""))
+            }
+        }
+    }
+}</code></pre>
+
+  <p>
+    The builder functions produce sealed <code>ScreenState</code> values: <code>loading { }</code>
+    for loading indicators, <code>error { }</code> for error views, and <code>screen { }</code>
+    for content. The <code>ScreenComposable</code> UI component subscribes to the state flow and
+    renders the correct state automatically.
+  </p>
+
+  <p>
+    See the <a href="../design/builder/builder/net.zagart.design.builder/">Builder API</a> for the
+    full list of available content scope builders.
+  </p>
+
+  <h3>Stateless UI Integration</h3>
+
+  <p>
+    When not using <code>ScreenBuilderViewModel</code>, follow the stateless UI pattern with
+    <code>ScreenEvents</code> and separate <code>ScreenUi</code> composables. The design library's
+    components are compatible with both approaches.
+  </p>
+
+  <h2>Navigation</h2>
+
+  <p>
+    The <strong>navigation</strong> library provides a type-safe, serializable navigation system
+    with animated transitions and multi-backstack support.
+  </p>
+
+  <h3>AppDestination</h3>
+
+  <p>
+    Each screen is associated with a specific <code>AppDestination</code> subclass defined in the
+    feature's <code>:api</code> module. Destinations are <code>@Serializable</code>, carry typed
+    parameters, and manage backstack position via <code>Destination.Args</code>:
+  </p>
+
+  <pre><code><span class="token-func">@Serializable</span>
+<span class="token-keyword">data class</span> FeatureDestination(
+    <span class="token-keyword">val</span> itemId: String,
+    <span class="token-keyword">val</span> backstackIndex: Int = 0,
+) : <span class="token-func">AppDestination</span>(
+    args = Destination.Args(
+        backstackIndex = backstackIndex,
+    )
+)</code></pre>
+
+  <h3>Screen Entry Point</h3>
+
+  <pre><code><span class="token-func">@Composable</span>
+<span class="token-keyword">fun</span> <span class="token-func">FeatureScreen</span>(
+    destination: FeatureDestination,
+    viewModel: FeatureScreenViewModel = <span class="token-func">koinViewModel</span>(parameters = { <span class="token-func">parametersOf</span>(destination) })
+) {
+    <span class="token-func">ScreenComposable</span>(viewModel)
+}</code></pre>
+
+  <h3>Outgoing Navigation</h3>
+
+  <p>
+    ViewModels inheriting from <code>ScreenBuilderViewModel</code> can trigger navigation using the
+    <code>navigate(destination)</code> function, which accepts any <code>AppDestination</code>:
+  </p>
+
+  <pre><code><span class="token-keyword">class</span> <span class="token-func">FeatureScreenViewModel</span>(...) : <span class="token-func">ScreenBuilderViewModel</span>() {
+    <span class="token-keyword">fun</span> <span class="token-func">onItemSelected</span>(id: String) {
+        <span class="token-func">navigate</span>(DetailDestination(itemId = id))
+    }
+}</code></pre>
+
+  <h2>Putting It Together</h2>
+
+  <p>
+    The combination of <strong>design</strong> and <strong>navigation</strong> provides a
+    complete implementation of the patterns described in the <a href="core.html">core architecture</a>:
+  </p>
+
+  <ul>
+    <li><strong>MVI state management</strong> via the builder DSL (<code>screen { }</code>, <code>loading { }</code>, <code>error { }</code>) and <code>ScreenComposable</code> renderer</li>
+    <li><strong>Typed navigation</strong> via <code>AppDestination</code> with backstack management and animated transitions</li>
+    <li><strong>Convenience base classes</strong> like <code>ScreenBuilderViewModel</code> that wire <code>ScreenController</code>, navigation, and DI together</li>
+    <li><strong>Reduced boilerplate</strong> — loading, error, and content states are handled automatically by the state machine</li>
+  </ul>
+
+  <p>
+    Together, these libraries let you focus on feature logic while the framework handles the architectural
+    plumbing.
+  </p>
+
+  <div class="back"><a href="../">&larr; Back</a></div>
+</body>
+</html>

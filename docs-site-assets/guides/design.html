@@ -45,6 +45,8 @@
     table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
     th, td { text-align: left; padding: 0.5rem; border-bottom: 1px solid var(--border); }
     th { color: var(--text-muted); font-weight: 600; }
+    ul { margin-bottom: 1rem; padding-left: 1.25rem; }
+    li { margin-bottom: 0.25rem; }
   </style>
 </head>
 <body>
@@ -60,29 +62,175 @@
 
   <h2>Installation</h2>
   <pre><code>commonMain.dependencies {
-    implementation("net.zagart.design:ui:1.6.5")
-    implementation("net.zagart.design:builder:1.6.5")
+    implementation(<span class="token-string">"net.zagart.design:ui:1.6.5"</span>)
+    implementation(<span class="token-string">"net.zagart.design:builder:1.6.5"</span>)
 }</code></pre>
 
-  <h2>Basic Usage</h2>
+  <h2>Quick Start</h2>
+
+  <h3>1. Theme Setup</h3>
+  <p>Wrap your app content in <code>DesignTheme</code>. It provides <code>LocalScreenConfiguration</code> and applies the selected color scheme, typography, and shapes.</p>
   <pre><code><span class="token-keyword">import</span> net.zagart.design.ui.DesignTheme
-<span class="token-keyword">import</span> net.zagart.design.ui.components.Button
-<span class="token-keyword">import</span> net.zagart.design.ui.components.listitem.ListItem
+<span class="token-keyword">import</span> net.zagart.design.ui.Settings
 
-<span class="token-func">DesignTheme</span> {
-    <span class="token-func">Button</span>(<span class="token-string">"Click me"</span>, onClick = { /* ... */ })
-    <span class="token-func">ListItem</span>(label = <span class="token-string">"Settings"</span>, onClick = { /* ... */ })
+<span class="token-keyword">val</span> settings = Settings(
+    isDark = true,
+    animateTransitions = true,
+    theme = Theme.Indigo
+)
+
+<span class="token-func">DesignTheme</span>(settings = settings) {
+    <span class="token-comment">// content</span>
+}</code></pre>
+  <p>Three theme variants are available:</p>
+  <ul>
+    <li><code>Indigo</code> — blue-indigo palette</li>
+    <li><code>CyanDeep</code> — deep cyan-teal palette</li>
+    <li><code>OliveGold</code> — warm olive-gold palette</li>
+  </ul>
+
+  <h3>2. Basic UI Components</h3>
+  <pre><code><span class="token-keyword">import</span> net.zagart.design.ui.components.*
+<span class="token-keyword">import</span> net.zagart.design.ui.components.button.Button
+<span class="token-keyword">import</span> net.zagart.design.ui.components.listitem.ListItem
+<span class="token-keyword">import</span> net.zagart.design.ui.components.listitem.SwitchListItem
+
+<span class="token-func">DesignTheme</span>(settings) {
+    Column {
+        <span class="token-func">TopAppBar</span>(title = <span class="token-string">"Settings"</span>)
+        <span class="token-func">TextField</span>(value = text, onValueChange = { text = it }, label = <span class="token-string">"Name"</span>)
+        <span class="token-func">ListItem</span>(label = <span class="token-string">"Notifications"</span>, onClick = { /* navigate */ })
+        <span class="token-func">SwitchListItem</span>(label = <span class="token-string">"Dark mode"</span>, checked = isDark, onCheckedChange = { isDark = it })
+        <span class="token-func">Button</span>(<span class="token-string">"Save"</span>, onClick = { /* save */ })
+    }
 }</code></pre>
 
-  <h2>Features</h2>
+  <h2>Builder DSL — Screen-Driven UI</h2>
+
+  <h3>Architecture</h3>
+  <p>The Builder module separates UI rendering from state management via the <code>ScreenController</code> interface. The controller owns the screen state as a <code>StateFlow</code>, while <code>ScreenComposable</code> observes it and renders the appropriate <code>ScreenState</code> variant.</p>
+
+  <h3>Creating a ScreenController</h3>
+  <pre><code><span class="token-keyword">import</span> net.zagart.design.builder.*
+<span class="token-keyword">import</span> net.zagart.design.builder.models.*
+
+<span class="token-keyword">class</span> MyScreenController : ScreenController {
+
+    <span class="token-keyword">private val</span> _state = MutableStateFlow(buildInitialState())
+    <span class="token-keyword">override val</span> state: StateFlow&lt;ScreenState&gt; = _state
+    <span class="token-keyword">override val</span> isNavigationBarVisible = MutableStateFlow(true)
+
+    <span class="token-keyword">private fun </span><span class="token-func">buildInitialState</span>(): ScreenState = screen {
+        header {
+            title(<span class="token-string">"My Screen"</span>)
+            search()
+        }
+        section {
+            item(id = <span class="token-string">"opt_a"</span>, label = <span class="token-string">"Option A"</span>, subtitle = <span class="token-string">"Description A"</span>)
+            toggle(id = <span class="token-string">"feature_x"</span>, label = <span class="token-string">"Enable Feature X"</span>)
+        }
+        lane {
+            media(id = <span class="token-string">"m1"</span>, title = <span class="token-string">"Item 1"</span>, imageUrl = <span class="token-string">"https://..."</span>)
+            media(id = <span class="token-string">"m2"</span>, title = <span class="token-string">"Item 2"</span>, imageUrl = <span class="token-string">"https://..."</span>)
+        }
+        choice {
+            option(id = <span class="token-string">"sort_date"</span>, label = <span class="token-string">"Sort by date"</span>)
+            option(id = <span class="token-string">"sort_name"</span>, label = <span class="token-string">"Sort by name"</span>)
+        }
+        filter {
+            option(id = <span class="token-string">"cat_a"</span>, label = <span class="token-string">"Category A"</span>)
+            option(id = <span class="token-string">"cat_b"</span>, label = <span class="token-string">"Category B"</span>)
+        }
+    }
+
+    <span class="token-keyword">override fun </span><span class="token-func">onClick</span>(id: String) {
+        <span class="token-comment">// handle component click by id</span>
+    }
+
+    <span class="token-keyword">override fun </span><span class="token-func">onSearch</span>(query: String) {
+        <span class="token-comment">// update state with filtered results</span>
+    }
+
+    <span class="token-keyword">override fun </span><span class="token-func">onRefresh</span>() {
+        _state.value = loading { message(<span class="token-string">"Refreshing..."</span>) }
+        <span class="token-comment">// reload data, then emit new screen { ... }</span>
+    }
+
+    <span class="token-keyword">override fun </span><span class="token-func">onBack</span>() { <span class="token-comment">/* navigate back */</span> }
+    <span class="token-keyword">override fun </span><span class="token-func">onLoadMore</span>() { <span class="token-comment">/* paginate */</span> }
+    <span class="token-keyword">override fun </span><span class="token-func">onResume</span>() { <span class="token-comment">/* refresh on return */</span> }
+    <span class="token-keyword">override fun </span><span class="token-func">isChecked</span>(id: String) = false
+    <span class="token-keyword">override fun </span><span class="token-func">isSelected</span>(id: String) = false
+    <span class="token-keyword">override fun </span><span class="token-func">isFiltered</span>(id: String) = false
+    <span class="token-keyword">override fun </span><span class="token-func">filter</span>(filterId: String, optionId: String) { }
+    <span class="token-keyword">override fun </span><span class="token-func">map</span>(itemId: String) { }
+    <span class="token-keyword">override fun </span><span class="token-func">registerLazyLoader</span>(componentId: String, loader: () -> Unit) { }
+}</code></pre>
+
+  <h3>Rendering</h3>
+  <pre><code><span class="token-keyword">import</span> net.zagart.design.builder.ScreenComposable
+<span class="token-keyword">import</span> net.zagart.design.ui.DesignTheme
+
+<span class="token-func">DesignTheme</span>(settings) {
+    <span class="token-func">ScreenComposable</span>(controller = myController)
+}</code></pre>
+
+  <p>For stateless usage with explicit callbacks:</p>
+  <pre><code><span class="token-keyword">import</span> net.zagart.design.builder.ScreenComposableUi
+
+<span class="token-func">ScreenComposableUi</span>(
+    state = myController.state.value,
+    onRefresh = myController::onRefresh,
+    onLoadMore = myController::onLoadMore,
+    onClick = myController::onClick,
+    onBack = myController::onBack,
+    onSearch = myController::onSearch,
+)</code></pre>
+
+  <h3>Loading &amp; Error States</h3>
+  <pre><code><span class="token-comment">// Loading state with optional message</span>
+_state.value = loading { message(<span class="token-string">"Loading content..."</span>) }
+
+<span class="token-comment">// Error state with optional retry</span>
+_state.value = error {
+    message(<span class="token-string">"Something went wrong"</span>)
+}</code></pre>
+
+  <h3>Preview</h3>
+  <p>Use <code>PreviewScreenComposable</code> with <code>PreviewScreenController</code> for previews:</p>
+  <pre><code><span class="token-keyword">import</span> net.zagart.design.builder.PreviewScreenComposable
+
+<span class="token-func">PreviewScreenComposable</span> {
+    screen {
+        header {
+            title(<span class="token-string">"Preview"</span>)
+        }
+        section {
+            item(id = <span class="token-string">"1"</span>, label = <span class="token-string">"Sample item"</span>)
+        }
+    }
+}</code></pre>
+
+  <h2>Architecture Overview</h2>
+  <p>The library follows a data-driven UI pattern:</p>
+  <ol>
+    <li><strong>UI module</strong> — stateless, themed Composables (buttons, lists, navigation, inputs)</li>
+    <li><strong>Builder module</strong> — declarative DSL producing <code>ScreenComponentViewData</code> models, dispatched via <code>ComponentMapper</code> to UI renderers</li>
+    <li><strong>ScreenController</strong> — decouples state from rendering, enabling both local and backend-driven UIs</li>
+  </ol>
+  <p>This architecture enables rendering any screen state uniformly, whether built programmatically or parsed from a server response.</p>
+
+  <h2>Design Tokens</h2>
   <table>
-    <tr><th>Module</th><th>Description</th></tr>
-    <tr><td><code>:ui</code></td><td>Core UI components (buttons, text fields, icons, lists, navigation bars, etc.) built with Compose Multiplatform + Material3, 3 theme variants (Indigo, CyanDeep, OliveGold)</td></tr>
-    <tr><td><code>:builder</code></td><td>Declarative DSL for constructing screen states; enables backend-driven UI (BDUI) patterns with ScreenController and ScreenComponentViewData model</td></tr>
+    <tr><th>Token</th><th>Accessor</th><th>Description</th></tr>
+    <tr><td>Spacing</td><td><code>spacings.x1</code> to <code>spacings.x16</code></td><td>Base spacing = 4dp × multiplier</td></tr>
+    <tr><td>Dimensions</td><td><code>dimens.iconSize</code></td><td>Default icon size = 48dp</td></tr>
+    <tr><td>Colors</td><td><code>colors.primary</code>, <code>.secondary</code>, <code>.surface</code>, etc.</td><td>Material3 color roles from active theme</td></tr>
+    <tr><td>Typography</td><td><code>typography.bodyLarge</code>, <code>.titleMedium</code>, etc.</td><td>Material3 text styles</td></tr>
+    <tr><td>Shapes</td><td><code>shapes.small</code>, <code>.medium</code>, <code>.large</code></td><td>Material3 corner shapes</td></tr>
   </table>
 
   <h2>Versioning &amp; Releases</h2>
-  <p>Follows <strong>Semantic Versioning</strong> with release phases: <code>alpha</code>, <code>beta</code>, <code>rc</code>, stable.</p>
   <ol>
     <li>Update <code>version</code> in <code>ui/build.gradle.kts</code> and <code>builder/build.gradle.kts</code></li>
     <li>Run <code>./gradlew :ui:publish :builder:publish</code></li>
