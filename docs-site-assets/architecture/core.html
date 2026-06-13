@@ -247,20 +247,29 @@ flowchart LR
 
   <p>
     Expected failures cross layer boundaries as <strong>typed sealed types</strong>, never as exceptions.
-    A shared <code>Result&lt;T, E&gt;</code> wrapper in <code>core:domain</code> carries the success value or a typed error.
+    The project uses Arrow's <code>Either&lt;L, R&gt;</code> for all fallible operations, with a two-level
+    error model.
   </p>
 
   <table>
-    <tr><th>Origin</th><th>Caught in</th><th>Mapped to</th><th>Consumed in</th></tr>
-    <tr><td>Network / service call</td><td><code>:data</code></td><td>Network error enum</td><td><code>:domain</code> (use case logic) or <code>:presentation</code> (UI feedback)</td></tr>
-    <tr><td>Local DB / cache</td><td><code>:data</code></td><td>Local error enum</td><td><code>:domain</code> or <code>:presentation</code></td></tr>
-    <tr><td>Business logic / validation</td><td><code>:domain</code></td><td>Feature-specific error enum</td><td><code>:presentation</code></td></tr>
+    <tr><th>Layer</th><th>Error type</th><th>Role</th></tr>
+    <tr><td><code>:service</code></td><td><code>ResponseError</code></td><td>Raw HTTP/API outcomes (<code>HttpError</code>, <code>ApiError</code>, <code>NetworkError</code>, <code>UnknownError</code>)</td></tr>
+    <tr><td><code>core:domain</code></td><td><code>FailureDomainData</code></td><td>Domain-agnostic failure categories (<code>Network</code>, <code>Server</code>, <code>Unknown</code>), each wrapping a <code>Throwable</code></td></tr>
   </table>
 
+  <h3>Flow</h3>
+
+  <ol>
+    <li><strong>Service layer</strong> — <code>safeApiCall()</code> wraps every Ktor call, returning <code>Either&lt;ResponseError, T&gt;</code>.</li>
+    <li><strong>Data layer</strong> — repository calls the service, then applies <code>.mapError()</code> to convert <code>ResponseError</code> → <code>FailureDomainData</code>. Local errors use <code>Either.Left(FailureDomainData.Unknown(...))</code>.</li>
+    <li><strong>Domain layer</strong> — use cases chain operations with <code>.flatMap</code> or Arrow's <code>either { }</code> builder with <code>.bind()</code> for imperative-style short-circuit propagation.</li>
+    <li><strong>Presentation layer</strong> — ViewModels consume the result via <code>.onLeft { }</code> / <code>.onRight { }</code> or <code>.fold()</code>. Domain errors are mapped to per-screen <code>FormError</code> enums or read directly from <code>failure.throwable.message</code>.</li>
+  </ol>
+
   <p>
-    User-facing errors are mapped to <code>UiText</code> (string resource or dynamic string) via extension
-    functions in <code>:presentation</code> or <code>core:presentation</code>. The ViewModel never
-    exposes raw exceptions or error enums to the UI — only <code>UiText</code> or <code>null</code>.
+    <code>FailureDomainData</code> is a <strong>sealed interface</strong> that can be extended when the app
+    needs more failure categories — add new subclasses alongside the existing <code>Network</code>,
+    <code>Server</code>, and <code>Unknown</code> variants.
   </p>
 
   <h2>Convention Plugins</h2>
