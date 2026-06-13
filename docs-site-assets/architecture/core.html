@@ -73,8 +73,8 @@
   <p class="subtitle">Kotlin Multiplatform project setup (Compose UI, Clean Architecture, MVI)</p>
 
   <p>
-    Covers Gradle module structure, Clean Architecture layers, naming conventions, and the MVI-based
-    presentation pattern.
+    Covers Gradle module structure, Clean Architecture layers, naming conventions, error propagation,
+    and the MVI-based presentation pattern.
   </p>
 
   <h2>Modularization Strategy</h2>
@@ -97,7 +97,7 @@
       </ul>
     </li>
     <li><strong><code>feature:*</code></strong>: Business logic and UI for specific application features.</li>
-    <li><strong><code>service:*</code></strong>: Low-level technical services or external API wrappers.</li>
+    <li><strong><code>service:*</code></strong>: Low-level technical services or external API wrappers (e.g., Ktor API client, analytics, push notifications). These are dependency-free modules that expose narrow, domain-agnostic interfaces consumed exclusively by <code>:data</code>.</li>
   </ul>
 
   <h2>Clean Architecture Layers</h2>
@@ -109,7 +109,7 @@
   <ul>
     <li><strong><code>:api</code></strong>: Navigation destinations for app-shell wiring. Not a cross-feature contract.</li>
     <li><strong><code>:domain</code></strong>: Pure business logic, use cases, and repository interfaces. The <strong>sharable business capability layer</strong> — any feature may depend on another feature's <code>:domain</code> to reuse its behavior. Depends only on <code>core:domain</code>.</li>
-    <li><strong><code>:data</code></strong>: Repository implementations internal to the feature. Depends on its own <code>:domain</code> only for the repository interfaces it implements, plus <code>:service:*</code> modules for technical infrastructure.</li>
+    <li><strong><code>:data</code></strong>: Repository implementations internal to the feature. When local caching is needed alongside the <code>:service</code> layer, the repository may split into an internal <strong>cache data source</strong> (in-memory store, DataStore, or similar) that it coordinates with the service. Without a cache, the repository calls the service directly — no extra layers. Depends on its own <code>:domain</code> only for the repository interfaces it implements, plus <code>:service:*</code> modules for technical infrastructure.</li>
     <li><strong><code>:presentation</code></strong>: UI components and ViewModels internal to the feature. Depends on its own <code>:domain</code> and <code>:api</code>, plus <code>core:presentation</code>.</li>
   </ul>
 
@@ -242,6 +242,26 @@ flowchart LR
       <td>Domain is pure business logic and must not depend on volatile UI modules.</td>
     </tr>
   </table>
+
+  <h2>Error Propagation</h2>
+
+  <p>
+    Expected failures cross layer boundaries as <strong>typed sealed types</strong>, never as exceptions.
+    A shared <code>Result&lt;T, E&gt;</code> wrapper in <code>core:domain</code> carries the success value or a typed error.
+  </p>
+
+  <table>
+    <tr><th>Origin</th><th>Caught in</th><th>Mapped to</th><th>Consumed in</th></tr>
+    <tr><td>Network / service call</td><td><code>:data</code></td><td>Network error enum</td><td><code>:domain</code> (use case logic) or <code>:presentation</code> (UI feedback)</td></tr>
+    <tr><td>Local DB / cache</td><td><code>:data</code></td><td>Local error enum</td><td><code>:domain</code> or <code>:presentation</code></td></tr>
+    <tr><td>Business logic / validation</td><td><code>:domain</code></td><td>Feature-specific error enum</td><td><code>:presentation</code></td></tr>
+  </table>
+
+  <p>
+    User-facing errors are mapped to <code>UiText</code> (string resource or dynamic string) via extension
+    functions in <code>:presentation</code> or <code>core:presentation</code>. The ViewModel never
+    exposes raw exceptions or error enums to the UI — only <code>UiText</code> or <code>null</code>.
+  </p>
 
   <h2>Convention Plugins</h2>
 
