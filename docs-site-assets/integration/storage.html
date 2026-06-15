@@ -49,17 +49,25 @@
 </head>
 <body>
   <h1>Storage</h1>
-  <p class="subtitle">net.zagart.storage — module: core</p>
+  <p class="subtitle">net.zagart.storage — KMP scope-based storage with KSP entity generation</p>
 
-  <h2>Module</h2>
+  <h2>Modules</h2>
   <table>
     <tr><th>Module</th><th>Artifact</th><th>Targets</th></tr>
-    <tr><td><code>:core</code></td><td><code>net.zagart.storage:core</code></td><td>Android, JVM</td></tr>
+    <tr><td><code>:annotations</code></td><td><code>net.zagart.storage:annotations</code></td><td>Android, JVM, JS</td></tr>
+    <tr><td><code>:core</code></td><td><code>net.zagart.storage:core</code></td><td>Android, JVM, JS</td></tr>
+    <tr><td><code>:compiler</code></td><td><code>net.zagart.storage:compiler</code></td><td>JVM (KSP processor)</td></tr>
   </table>
 
   <h2>Installation</h2>
-  <pre><code>commonMain.dependencies {
-    implementation("net.zagart.storage:core:1.1.18")
+  <pre><code>plugins {
+    id("com.google.devtools.ksp") version "&lt;ksp-version&gt;"
+}
+
+commonMain.dependencies {
+    implementation("net.zagart.storage:annotations:&lt;version&gt;")
+    implementation("net.zagart.storage:core:&lt;version&gt;")
+    ksp("net.zagart.storage:compiler:&lt;version&gt;")
 }</code></pre>
 
   <h2>Basic Usage</h2>
@@ -80,21 +88,46 @@ storage.<span class="token-func">observe</span>(<span class="token-string">"user
     <span class="token-func">updateUI</span>(snapshot)
 }</code></pre>
 
+  <h2>Entity Persistence</h2>
+  <pre><code><span class="token-keyword">@Entity</span>
+data class User(
+    <span class="token-keyword">@Key</span> val id: String,
+    val name: String,
+    val age: Int,
+    <span class="token-keyword">@Embedded</span>(prefix = <span class="token-string">"user_"</span>) val address: Address
+)
+
+<span class="token-comment">// Write</span>
+storage.<span class="token-func">putEntity</span>(user)
+
+<span class="token-comment">// Read</span>
+<span class="token-keyword">val</span> user = storage.<span class="token-func">getEntity</span>(User::class, <span class="token-string">"user-1"</span>)
+
+<span class="token-comment">// Observe</span>
+storage.<span class="token-func">observeEntity</span>(User::class, <span class="token-string">"user-1"</span>).<span class="token-func">collect</span> { ... }
+
+<span class="token-comment">// Auto-registration is handled automatically</span>
+<span class="token-comment">// on JVM/Android via Storage.create().</span>
+<span class="token-comment">// No manual init needed.</span></code></pre>
+
   <h2>Features</h2>
   <table>
     <tr><th>Feature</th><th>Details</th></tr>
     <tr><td>Scope-based storage</td><td>Organize data into named scopes (e.g. <code>"settings"</code>, <code>"user_profile"</code>)</td></tr>
     <tr><td>Reactive observation</td><td>Observe changes via <code>Flow&lt;Snapshot&gt;</code> using the DSL builder</td></tr>
-    <tr><td>Entity persistence</td><td><code>@Entity</code>-annotated classes persisted via SQLDelight with <code>@Embedded</code> flattening</td></tr>
+    <tr><td>Entity persistence</td><td><code>@Entity</code>-annotated classes persisted via KSP code generation with <code>@Embedded</code> flattening</td></tr>
+    <tr><td>Zero-reflection</td><td>Adapters generated at compile time by KSP. No kotlin-reflect dependency</td></tr>
+    <tr><td>Auto-registration</td><td>Generated adapters discovered automatically on JVM/Android via <code>Storage.create()</code></td></tr>
     <tr><td>Type-safe keys</td><td>Define keys and defaults using <code>ObservationBuilder</code> DSL</td></tr>
     <tr><td>Compose-agnostic</td><td>Pure Kotlin — no Compose dependency</td></tr>
   </table>
 
   <h2>Platform Notes</h2>
   <table>
-    <tr><th>Platform</th><th><code>create()</code> context</th></tr>
-    <tr><td>Android</td><td>Requires <code>Context</code> as <code>platformContext</code></td></tr>
-    <tr><td>JVM</td><td><code>platformContext = null</code></td></tr>
+    <tr><th>Platform</th><th><code>create()</code> context</th><th>Auto-registration</th></tr>
+    <tr><td>Android</td><td>Requires <code>Context</code> as <code>platformContext</code></td><td>Yes (via <code>Class.forName</code>)</td></tr>
+    <tr><td>JVM</td><td><code>platformContext = null</code></td><td>Yes (via <code>Class.forName</code>)</td></tr>
+    <tr><td>JS</td><td><code>platformContext = null</code></td><td>Explicit <code>StorageEntities().register()</code> required</td></tr>
   </table>
 
   <h2>Versioning &amp; Releases</h2>
