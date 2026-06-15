@@ -80,7 +80,7 @@
   <h2>Modularization Strategy</h2>
 
   <p>
-    The project follows a <strong>Feature-based Modularization</strong> approach, complemented by <code>core</code> and
+    Follow a <strong>Feature-based Modularization</strong> approach, complemented by <code>core</code> and
     <code>service</code> modules to promote separation of concerns and scalability.
   </p>
 
@@ -247,7 +247,7 @@ flowchart LR
 
   <p>
     Expected failures cross layer boundaries as <strong>typed sealed types</strong>, never as exceptions.
-    The project uses Arrow's <code>Either&lt;L, R&gt;</code> for all fallible operations, with a two-level
+    Use Arrow's <code>Either&lt;L, R&gt;</code> for all fallible operations, with a two-level
     error model.
   </p>
 
@@ -341,7 +341,7 @@ flowchart LR
   <h2>Presentation State Management (MVI)</h2>
 
   <p>
-    The project follows a <strong>Single-State Architecture</strong> (MVI-pattern) for the presentation layer.
+    Follow a <strong>Single-State Architecture</strong> (MVI-pattern) for the presentation layer.
   </p>
 
   <ul>
@@ -480,7 +480,7 @@ flowchart LR
   <h2>Dependency Injection</h2>
 
   <p>
-    The project uses <strong>Koin</strong> with <strong>Koin Annotations</strong> for dependency injection.
+    Use <strong>Koin</strong> with <strong>Koin Annotations</strong> for dependency injection.
     This approach reduces boilerplate by using compile-time code generation for module definitions.
   </p>
 
