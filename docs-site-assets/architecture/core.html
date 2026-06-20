@@ -100,6 +100,35 @@
     <li><strong><code>service:*</code></strong>: Low-level technical services or external API wrappers (e.g., Ktor API client, analytics, push notifications). These are dependency-free modules that expose narrow, domain-agnostic interfaces consumed exclusively by <code>:data</code>.</li>
   </ul>
 
+  <h3>Project Structure</h3>
+
+  <p>
+    Every project follows a consistent top-level layout:
+  </p>
+
+  <pre><code>assembly/              <span class="token-comment"># App assembly — Compose Multiplatform module that wires features</span>
+app/
+  android/             <span class="token-comment"># Android application shell (Activity, manifest, resources)</span>
+  desktop/             <span class="token-comment"># Desktop entry point (Main.kt, native distribution config)</span>
+core/
+  assets/              <span class="token-comment"># Shared Compose resources (strings, icons, fonts)</span>
+  domain/              <span class="token-comment"># Fundamental domain models and business logic</span>
+  navigation/          <span class="token-comment"># Typed navigation system (AppDestination, ScreenComposable)</span>
+  presentation/        # Base UI classes (ScreenBuilderViewModel, etc.)
+feature/
+  &lt;name&gt;/api           <span class="token-comment"># Navigation destinations</span>
+  &lt;name&gt;/domain        <span class="token-comment"># Pure business logic, use cases, repository interfaces</span>
+  &lt;name&gt;/data          <span class="token-comment"># Repository implementations</span>
+  &lt;name&gt;/presentation  <span class="token-comment"># UI components and ViewModels</span>
+service/
+  &lt;name&gt;/              <span class="token-comment"># Technical services (Ktor API client, analytics, etc.)</span></code></pre>
+
+  <p>
+    Library-focused projects (e.g., <code>design</code>, <code>storage</code>, <code>navigation</code>) omit
+    <code>assembly/</code> and <code>app/</code>, publishing their <code>core/</code> modules to Maven
+    instead. Application projects include all directories above.
+  </p>
+
   <h2>Clean Architecture Layers</h2>
 
   <p>
@@ -275,13 +304,18 @@ flowchart LR
   <h2>Convention Plugins</h2>
 
   <p>
-    Use a <code>build-logic</code> module with <strong>Convention Plugins</strong> to:
+    Build configuration is centralized in a shared <strong>gradle-conventions</strong>
+    repository — a standalone Gradle project with convention plugins and a curated version catalog.
+    All projects include it via <code>settings.gradle.kts</code> to:
   </p>
 
   <ul>
-    <li>Standardize module configuration across the project.</li>
-    <li>Automatically apply necessary dependencies based on the module type (e.g., <code>FeatureDomainConventionPlugin</code> automatically adds <code>core:domain</code> dependency).</li>
-    <li>Enforce architectural boundaries at the build level.</li>
+    <li>Standardize module configuration across every project in the ecosystem.</li>
+    <li>Auto-wire feature-layer dependencies and enforce architectural boundaries at the build level.</li>
+    <li>Provide a single-source-of-truth version catalog (<code>conv</code>) for all dependencies (Kotlin, Compose, Koin, Arrow, Ktor, etc.).</li>
+    <li>Automatically wire sibling modules — e.g., <code>FeatureDomainConventionPlugin</code> adds <code>core:domain</code>,
+        and <code>FeaturePresentationConventionPlugin</code> wires its sibling <code>:api</code> and <code>:domain</code> modules.</li>
+    <li>Handle versioning from git tags, Maven Central publishing, and platform entry points (Android, Desktop) consistently.</li>
   </ul>
 
   <h2>Naming Conventions</h2>
@@ -363,6 +397,14 @@ flowchart LR
     <li><strong><code>&lt;Name&gt;ScreenEvents</code></strong>: A data class that encapsulates all UI-to-ViewModel interactions, scoping every callback into a single type and avoiding the callback hell that arises when a Composable accumulates dozens of lambda parameters.</li>
   </ul>
 
+  <p><strong>Design Note (data class vs. sealed events):</strong> A sealed-class-per-event approach was considered
+  but not adopted. Data class lambda properties are plain variables — this gives superior IDE navigation for
+  finding entry/exit points, tracking dependencies, and following the event flow. In a sealed approach those
+  connections are lost once the event object is passed as a parameter. Data classes do not suit reusable
+  components that need to share or delegate event handling; they excel for screens with a static structure.
+  For reusable components used within a static screen, their events are passed as lambda parameters within
+  the screen's data class.</p>
+
   <h4>Event Types</h4>
 
   <ul>
@@ -377,7 +419,7 @@ flowchart LR
   <pre><code><span class="token-keyword">data class</span> SampleScreenEvents(
     <span class="token-keyword">val</span> onBack: () <span class="token-keyword">-&gt;</span> Unit,
     <span class="token-keyword">val</span> onNextClick: () <span class="token-keyword">-&gt;</span> Unit,
-    <span class="token-keyword">val</span> onPrevious: () <span class="token-keyword">-&gt;</span> Unit,
+    <span class="token-keyword">val</span> onPreviousClick: () <span class="token-keyword">-&gt;</span> Unit,
     <span class="token-keyword">val</span> onSearchQueryChange: (query: String) <span class="token-keyword">-&gt;</span> String,
 )
 
@@ -390,20 +432,23 @@ flowchart LR
     <span class="token-keyword">val</span> events = <span class="token-func">remember</span> {
         SampleScreenEvents(
             onBack = viewModel::onBack,
-            onNextClick = viewModel::onNext,
-            onPrevious = viewModel::onPrevious,
+            onNextClick = viewModel::onNextClick,
+            onPreviousClick = viewModel::onPreviousClick,
             onSearchQueryChange = viewModel::formatSearchQuery,
         )
     }
 
-    <span class="token-func">SampleScreenUi</span>(state = state, events = events)
+    <span class="token-func">SampleScreenUi</span>(
+        state = state,
+        events = events,
+    )
 }
 
 <span class="token-func">@Composable</span>
 <span class="token-keyword">fun</span> <span class="token-func">SampleScreenUi</span>(
     state: SampleScreenState,
     events: SampleScreenEvents,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     <span class="token-comment">// UI rendering using state and events</span>
 }</code></pre>
