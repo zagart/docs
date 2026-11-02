@@ -106,10 +106,10 @@
     Every project follows a consistent top-level layout:
   </p>
 
-  <pre><code>assembly/              <span class="token-comment"># App assembly — Compose Multiplatform module that wires features</span>
+  <pre><code>assembly/              <span class="token-comment"># Optional dedicated graph host (multi-host / shared-graph setups)</span>
 app/
-  android/             <span class="token-comment"># Android application shell (Activity, manifest, resources)</span>
-  desktop/             <span class="token-comment"># Desktop entry point (Main.kt, native distribution config)</span>
+  android/             <span class="token-comment"># Android app shell; graph host via kspAssembly { host = true }</span>
+  desktop/             <span class="token-comment"># Desktop entry; graph host via kspAssembly { host = true }</span>
 core/
   assets/              <span class="token-comment"># Shared Compose resources (strings, icons, fonts)</span>
   domain/              <span class="token-comment"># Fundamental domain models and business logic</span>
@@ -125,8 +125,17 @@ service/
 
   <p>
     Library-focused projects (e.g., <code>design</code>, <code>storage</code>, <code>navigation</code>) omit
-    <code>assembly/</code> and <code>app/</code>, publishing their <code>core/</code> modules to Maven
-    instead. Application projects include all directories above.
+    <code>app/</code>, publishing their <code>core/</code> modules to Maven
+    instead. Application projects include <code>app/</code>; <code>assembly/</code> is
+    added only when a separate graph host module is preferred over host mode.
+  </p>
+
+  <p>
+    The graph host is selected with <code>kspAssembly { host = true }</code> on the
+    platform modules (<code>app/android</code>, <code>app/desktop</code>), which is the
+    current default. A dedicated <code>assembly/</code> module remains supported for
+    multi-host or shared-graph setups via <code>wiring { assembly.set(true) }</code>;
+    both forms generate the same graph classes.
   </p>
 
   <h2>Clean Architecture Layers</h2>
