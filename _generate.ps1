@@ -66,6 +66,7 @@ Get-ChildItem -LiteralPath $DocsSite -Recurse -Filter "*.html" | ForEach-Object 
 $Assets = Join-Path $PSScriptRoot "docs-site-assets"
 if (Test-Path $Assets) {
     Copy-Item -LiteralPath "$Assets/index.html" -Destination (Join-Path $DocsSite "index.html") -Force
+    Copy-Item -LiteralPath "$Assets/404.html" -Destination (Join-Path $DocsSite "404.html") -Force
     Copy-Item -LiteralPath "$Assets/design/index.html" -Destination (Join-Path $DocsSite "design/index.html") -Force
     foreach ($dir in @("integration", "architecture")) {
         $src = Join-Path $Assets $dir

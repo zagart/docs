@@ -94,6 +94,7 @@ jobs:
       - name: Copy landing pages, guides, and architecture
         run: |
           cp -r docs-site-assets/index.html site/
+          cp -r docs-site-assets/404.html site/
           cp -r docs-site-assets/design site/
           cp -r docs-site-assets/integration site/
           cp -r docs-site-assets/architecture site/
