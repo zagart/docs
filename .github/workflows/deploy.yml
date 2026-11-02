@@ -11,6 +11,9 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout docs
+        uses: actions/checkout@v4
+
       - name: Checkout design
         uses: actions/checkout@v4
         with:
