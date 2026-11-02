@@ -1,3 +1,8 @@
 .gradle/
 build/
 site/
+
+# Local environment / secrets вЂ” never commit
+.env
+.env.*
+!.env.example
