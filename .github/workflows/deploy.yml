@@ -66,24 +66,24 @@ jobs:
           cd navigation
           ./gradlew :core:dokkaGenerate --no-daemon
 
-      - name: Assemble docs-site
+      - name: Assemble site
         run: |
-          mkdir -p docs-site/design/ui docs-site/design/builder docs-site/storage docs-site/navigation
-          cp -r design/ui/build/dokka/html/* docs-site/design/ui/
-          cp -r design/builder/build/dokka/html/* docs-site/design/builder/
-          cp -r storage/core/build/dokka/html/* docs-site/storage/
-          cp -r navigation/core/build/dokka/html/* docs-site/navigation/
+          mkdir -p site/design/ui site/design/builder site/storage site/navigation
+          cp -r design/ui/build/dokka/html/* site/design/ui/
+          cp -r design/builder/build/dokka/html/* site/design/builder/
+          cp -r storage/core/build/dokka/html/* site/storage/
+          cp -r navigation/core/build/dokka/html/* site/navigation/
 
       - name: Copy landing pages, guides, and architecture
         run: |
-          cp -r docs-site-assets/index.html docs-site/
-          cp -r docs-site-assets/design docs-site/
-          cp -r docs-site-assets/integration docs-site/
-          cp docs-site-assets/architecture.html docs-site/
+          cp -r docs-site-assets/index.html site/
+          cp -r docs-site-assets/design site/
+          cp -r docs-site-assets/integration site/
+          cp -r docs-site-assets/architecture site/
 
       - name: Fix unresolved cross-module symbol references
         run: |
-          find docs-site -name '*.html' -exec sed -i 's/ERROR CLASS: Symbol not found for \([A-Za-z]*\)/\1/g' {} +
+          find site -name '*.html' -exec sed -i 's/ERROR CLASS: Symbol not found for \([A-Za-z]*\)/\1/g' {} +
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3

@@ -56,15 +56,21 @@ Get-ChildItem -LiteralPath $DocsSite -Recurse -Filter "*.html" | ForEach-Object 
     }
 }
 
-# Copy landing pages and guides
+# Copy landing pages, integration guides, and architecture pages
 $Assets = Join-Path $PSScriptRoot "docs-site-assets"
 if (Test-Path $Assets) {
     Copy-Item -LiteralPath "$Assets/index.html" -Destination (Join-Path $DocsSite "index.html") -Force
     Copy-Item -LiteralPath "$Assets/design/index.html" -Destination (Join-Path $DocsSite "design/index.html") -Force
-    Get-ChildItem -LiteralPath "$Assets/integration" -File | ForEach-Object {
-        Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $DocsSite "integration/$($_.Name)") -Force
+    foreach ($dir in @("integration", "architecture")) {
+        $src = Join-Path $Assets $dir
+        if (-not (Test-Path $src)) { continue }
+        $dst = Join-Path $DocsSite $dir
+        New-Item -ItemType Directory -Force -Path $dst | Out-Null
+        Get-ChildItem -LiteralPath $src -File | ForEach-Object {
+            Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $dst $_.Name) -Force
+        }
     }
-    Write-Host "  Landing pages and guides copied" -ForegroundColor Gray
+    Write-Host "  Landing, integration, and architecture pages copied" -ForegroundColor Gray
 }
 
 Write-Host "`n=== Documentation assembled in site/ ===" -ForegroundColor Cyan
