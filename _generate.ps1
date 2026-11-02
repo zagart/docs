@@ -4,6 +4,12 @@ $NoDaemon = if (-not $Daemon) { "--no-daemon" } else { "" }
 $WorkspaceRoot = Split-Path -Parent $PSScriptRoot
 $DocsSite = Join-Path $PSScriptRoot "site"
 
+# Rebuild from scratch: without this, pages for removed projects and renamed
+# asset directories survive as orphans that the site still serves.
+if (Test-Path -LiteralPath $DocsSite) {
+    Remove-Item -LiteralPath $DocsSite -Recurse -Force
+}
+
 $Projects = @(
     @{ Dir = "design";   Tasks = @(":ui:dokkaGenerate", ":builder:dokkaGenerate") }
     @{ Dir = "storage"; Tasks = @(":core:dokkaGenerate") }
